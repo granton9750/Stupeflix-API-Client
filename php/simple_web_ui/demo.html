@@ -1,0 +1,331 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+  <title>Stupeflix demo</title>
+  <link rel="stylesheet" href="m/stupeflix.css" type="text/css" charset="utf-8">
+  <script type="text/javascript" charset="utf-8" src="m/mootools-1.2.1-core-nc.js"></script>
+  <script type="text/javascript" charset="utf-8">
+
+    /* Start adding some standard functions to Element object */  
+    Element.implement({
+      hide: function(){
+        this.setStyle("display", "none");
+        return this;
+      },
+      show: function(){
+        this.setStyle("display", "");
+        return this;
+      }
+    });
+    
+    /* Random pick an element in an array */
+    pick = function(choices){
+      return choices[Math.round(Math.random() * (choices.length - 1))];
+    }
+    
+    /* Create the Stupeflix object, that will handle global information on current task */  
+    var Stupeflix = {};
+                
+    /* The following lines are used to select randomly some transitions. */
+    /* This is the set of available transitions. This list is of course not definitive */
+    Stupeflix.Transitions = ["crossfade","waterdrop","circle","radial","swirl","strip","scan","scans","move","over","under","cube","spiral"];
+    /* This is the set of available effects. */
+    Stupeflix.Effects = ["none", "panel", "flower", "kenburns", "explode", "slice", "rectangles"];
+    /* Transition duration */
+    Stupeflix.Transition_Duration = 1.5;
+    /* Imaxge duration */
+    Stupeflix.Image_Duration = 6;
+    /* Video width and height*/
+    Stupeflix.Video_Width = 640;
+    Stupeflix.Video_Height = 360;
+    
+    /* Stupeflix object : function to select a random effet */
+    Stupeflix.getRandomEffect = function(){
+      return pick(Stupeflix.Effects);
+    };
+    
+    /* Stupeflix object : function to select a random transition */
+    Stupeflix.getRandomTransition = function(){
+      return '\n    <transition type="'+pick(Stupeflix.Transitions)+'" duration="'+Stupeflix.Transition_Duration+'" />\n';
+    };          
+    
+    /* Stupeflix object : Board = set of functions to implement the workflow */
+    Stupeflix.Board = {
+      /* Stupeflix Board object : constructor */
+      initialize: function(){
+        this._topBarItems = this.getElements(".topBar li");
+        this._pages = this.getElements(".page");
+        for(var i = 0; i < this._topBarItems.length; i++){
+          this._topBarItems[i].addEvent("click", this.onMenuItemClicked.bind(this, i));
+        }
+        
+        this._progressBar = this.getElement(".videoGeneration .progressBar .inner");
+        this._progressBarFx = new Fx.Morph(this._progressBar, {unit: "%", onComplete: this.onStatusUpdated.bind(this)})
+      },
+      
+      /* Stupeflix Board object : onMenuItemClicked function: tab click handler */
+      onMenuItemClicked: function(i){
+        if(this._topBarItems[i].hasClass("done")){
+          var parts = this._pages[i].className.split(" ");
+          this.showPage(parts[parts.indexOf("page") + 1]);
+        }
+      },
+      
+      /* Stupeflix Board object : showpage function: change the displayed tab page */
+      showPage: function(pageName){
+        var match = false;
+        for(var i = this._pages.length - 1; i >= 0; i--){
+          var page = this._pages[i];
+          var menuItem = this._topBarItems[i];
+          if(page.hasClass(pageName)){
+            match = true;
+            page.show();
+            menuItem.className = "current";
+          }else{
+            if(match){
+              menuItem.className = "done";
+            }else{
+              menuItem.className = "";              
+            }
+            page.hide();
+          }
+        }
+      },
+      
+      /* Stupeflix Board object : addImageUrl function: add an image url in the sequence */
+      addImageUrl: function(url){
+        var page = this.getElement(".addImages");
+        var container = page.getElement(".images");        
+        var image = container.appendChild(new Element("li").addClass("unknowedImage"));
+        var imgElt = image.appendChild(new Element("img", {src: url}));
+        image.appendChild(new Element("cite", {html: url}));
+        var delBtn = image.appendChild(new Element("button", {html: "delete"}));
+        
+        imgElt.addEvent("load", function(){
+          image.removeClass("unknowedImage").addClass("validImage");
+          page.addClass("addImagesValid");
+        }.bind(this));
+
+        delBtn.addEvent("click", function(){
+          container.removeChild(image);
+          this.checkForImages();
+        }.bind(this));
+      },
+      
+      /* Stupeflix Board object : addImages function : add the urls added, one by line */
+      addImages: function(){
+        var page = this.getElement(".addImages");
+        var field = page.getElement("form textarea");
+                                /* split the field line by line */
+        var urls = field.value.split("\n");
+        var added = 0;                        
+        for(var i=0; i < urls.length; i++){
+          var url = urls[i];
+          if(url != ""){
+            added++;
+            this.addImageUrl(url);
+          }
+        }
+        field.value = "";
+        if(added) page.removeClass("addImagesEmpty");
+      },
+
+      /* Stupeflix Board object : checkForImages function : check that at least one image is in the sequence. */
+      checkForImages: function(){
+        var page = this.getElement(".addImages");
+        var entries = page.getElements(".images li");
+        if(entries.length){
+          var valids = page.getElements(".images li.validImage");
+          if(!valids.length) page.removeClass("addImagesValid");
+        } else {
+          page.removeClass("addImagesValid"); 
+          page.addClass("addImagesEmpty");
+        }        
+      },
+      
+      /* Stupeflix Board object : genDefinition function : generate the xml using javascript only. You may implement this in php too. */
+      genDefinition: function(){
+        this.showPage("videoDefinition");
+        this.endEdition();
+        
+        var xmlImages = [];
+        var images = this.getElements(".addImages .images li.validImage img");  
+        for(var i = 0; i < images.length; i++){
+          var imgUrl = images[i].src;
+          
+          if(i > 0){
+            xmlImages.push(Stupeflix.getRandomTransition());            
+          }
+          
+          xmlImages.push([
+            '    <stack>',
+            '      <effect type="'+Stupeflix.getRandomEffect()+'" duration="'+Stupeflix.Image_Duration+'">',
+            '        <image filename="'+imgUrl+'"/>',
+            '      </effect>',
+            '      <text type="legend" direction="up">'+imgUrl.split('/').getLast()+'</text>',
+            '    </stack>'].join('\n'));
+        }
+      
+         this._definition = [
+          '<movie service="craftsman-1.0"><body>',
+          '<stack>',
+          '  <audio filename="http://www.stupeflix.com/m/code/PictureOfYou.mp3" fadein="3" fadeout="3"/>',
+          '  <sequence>',
+          xmlImages.join('\n'),
+          '  </sequence>',
+          '</stack>',
+          '</body></movie>'].join('\n');
+      },
+
+      /* Stupeflix Board object : editDefinition function : display the xml editor */
+      editDefinition: function(){
+        this.getElement(".videoDefinition .body").hide();
+        var editor = this.getElement(".videoDefinition form");
+        editor.show();
+        editor.getElement("textarea").value = this._definition;
+        this._edition = true;
+      },
+
+      /* Stupeflix Board object : endEdition function : end the edition of the xml */      
+      endEdition: function(){
+        this._edition = false;
+        this.getElement(".videoDefinition .body").show();
+        this.getElement(".videoDefinition form").hide();
+      },
+      
+      /* Stupeflix Board object : genVideo function : launch the video generation */
+      genVideo: function(){
+        if(this._edition) this._definition = this.getElement(".videoDefinition form textarea").value;        
+        this.showPage("videoGeneration");
+        
+        if(this._definition != this._generatedDefinition){
+          this.getElement(".videoGeneration .video").hide();
+          this.getElement(".videoGeneration .generation").show();
+          
+          this._progressBar.style.width = "0%";
+
+          /* Contact the proxy through a http post to launch the generation. */
+          new Request({ method: "post", url: "./proxy.php?action=generate",
+            onComplete: this.getStatus.bind(this)
+          }).send("definition="+encodeURIComponent(this._definition));
+          this._generatedDefinition = this._definition;
+        }
+      },
+      /* Stupeflix Board object : getStatus function : retrieve the status and update the progress bar */
+      getStatus: function(){        
+        new Request.JSON({ method: "get", url: "./proxy.php?action=status",
+          //secure: false, // quotes arround keys breaks validation
+          onComplete: function(profiles){  
+            this._status = profiles[0].status.status;
+            var completion = 10 + ((profiles[0].status.complete || 0) * 0.9);
+            this._progressBarFx.cancel();
+            this._progressBarFx.start({width: completion});
+          }.bind(this)
+        }).send();
+      },
+      
+      /* Stupeflix Board object : onStatusUpdated function : check if the status changed to 'available' then move to video view */
+      onStatusUpdated: function(){
+        if (this._status == 'available') {
+          this.showVideo();
+        } else {
+          setTimeout(this.getStatus.bind(this), 1000);
+        }
+      },
+    
+      /* Stupeflix Board object : showVideo function : build an embedded object to play video. Flash support is coming very soon.*/
+      showVideo: function(){
+        new Request({ method: "get", url: "./proxy.php?action=video",
+          onComplete: function(videoUrl){            
+            this.getElement(".videoGeneration .video").show();
+            this.getElement(".videoGeneration .generation").hide();            
+            var container = this.getElement(".videoGeneration .videoContainer");
+                                                containerHeight = Stupeflix.Video_Height + 16
+            container.innerHTML = 
+              '<object classid="clsid:02BF25D5-8C17-4B23-BC80-D3488ABDDC6B"' +
+              'width="' + Stupeflix.Video_Width +'" height="'+ containerHeight + '"' +
+              'codebase="http://www.apple.com/qtactivex/qtplugin.cab#version=6,0,2,0"' +
+              'align="middle" >' +
+              '<param name="src" value="'+ videoUrl +'" />' +
+              '<param name="autoplay" value="true" />' +
+              '<param name ="controller" value="true">' +
+              '<embed src="'+videoUrl+'" width="' + Stupeflix.Video_Width + '" height="' + containerHeight + '" '+
+              'pluginspage=http://www.apple.com/quicktime/download/' +
+              'align="middle" autoplay="true" bgcolor="black" > </embed>'+
+              '</object>';
+            this.getElement(".videoGeneration .video .bar a").href = videoUrl;
+          }.bind(this)
+        }).send();
+      }  
+    }
+    
+    /* Stupeflix object : main function : launch the workflow */
+    function main(){
+      $extend($("SxBoard"), Stupeflix.Board);
+      $("SxBoard").initialize();
+    }  
+  </script>
+  
+</head>
+<body onload="main();">
+  <!-- HTML application skeleton -->
+  <div id="SxBoard">
+    <!-- Tabs bar -->
+    <ul class="topBar">
+      <li class="current"><span>1.</span>Add images</li>
+      <li><span>2.</span>XML definition</li>
+      <li><span>3.</span>Generation</li>
+      <div class="separator"></div>
+    </ul>
+    <!--  Tabs pages
+    Page 1 : add images
+    example images from : 
+         http://commons.wikimedia.org/wiki/Image:Ha_long_bay.jpg
+         http://commons.wikimedia.org/wiki/Image:Monument_Valley_2.jpg
+         http://commons.wikimedia.org/wiki/Image:Canyon_de_Chelly,_Navajo.jpg                     
+    -->
+    <div class="page addImages addImagesEmpty">
+      <ul class="images"></ul>
+      <form onsubmit="$('SxBoard').addImages(); return false;">
+        <label>Enter some images urls here (1 image url per line):</label>
+        <textarea>http://www.stupeflix.com/m/code/images/Ha_long_bay.jpg
+http://www.stupeflix.com/m/code/images/Monument_Valley_2.jpg
+http://www.stupeflix.com/m/code/images/Canyon_de_Chelly_Navajo.jpg</textarea>
+        <div class="bar"><button type="submit">Add images</button></div>
+      </form>
+      <div class="bottomBar"><button type="normal" onclick="$('SxBoard').genDefinition();">Generate a random XML video definition</button></div>
+    </div>
+    
+    <!-- Page 2 : optionally edit the xml definition -->
+    <div class="page videoDefinition" style="display: none;">
+      <div class="body">
+        <h2>The XML video definition is ready !</h2>
+        <span class="pseudoLink" onclick="$('SxBoard').editDefinition()">Edit the generated XML</span>
+      </div>
+      <form style="display:none">
+        <label>XML video definition:</label>
+        <textarea></textarea>
+        <div class="bar"><span class="pseudoLink" onclick="$('SxBoard').endEdition()">Cancel Edition</span></div>
+      </form>
+      <div class="bottomBar"><button onclick="$('SxBoard').genVideo();">Generate the video !</button></div>
+    </div>
+
+    <!-- Page 3 : generate and and view the video -->
+    <div class="page videoGeneration" style="display:none;">
+      <div class="generation">
+        <label>Video generation in progress: </label>
+        <div class="progressBar"><div class="inner"></div></div>
+      </div>
+      <div class="video" style="display:none;">
+        <h2>Your video is ready !</h2>
+        <div class="videoContainer"></div>
+        <div class="bar"><a href="#">Download</a></div>
+      </div>
+    </div>    
+  </div>
+
+</body>
+</html>

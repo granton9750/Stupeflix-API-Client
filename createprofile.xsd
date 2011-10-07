@@ -1,0 +1,196 @@
+<?xml version="1.0"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+  <!-- Just a set of profiles to be created -->
+  <xs:element name="profiles">
+    <xs:complexType>
+      <xs:sequence>
+        <!-- Meta specified here are inherited by all profiles, unless they override them. -->
+       	<xs:element name="meta" type="metaType" minOccurs="0" maxOccurs="1"/>
+        <!-- Notification are also inherited by profiles -->
+       	<xs:element name="notify" type="notifyType" minOccurs="0" maxOccurs="1"/>
+        <!-- Set of profile -->
+       	<xs:element name="profile" type="profileType" minOccurs="1" maxOccurs="unbounded"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+
+  <xs:complexType name="profileType">
+    <xs:sequence>
+      <!-- Meta are inherited from the profile set, eventually overrided here, and transmitted to the uploads -->
+      <xs:element name="meta" type="metaType" minOccurs="0" maxOccurs="1"/>
+      <!-- Notification -->
+      <xs:element name="notify" type="notifyType" minOccurs="0" maxOccurs="1"/>
+      <!-- Types of upload. You have to specify at least one if you want to retrieve the video...
+           The file will be sent directly using the upload parameters, except for the stupeflixStore upload type: 
+           you can then also grab the file from the stupeflix temporary storage.
+        -->
+      <xs:choice maxOccurs="unbounded" minOccurs="0">
+        <!-- Use the standard API temporary store, so you can retrieve it through the API-->
+        <xs:element name="stupeflixStore" type="stupeflixStoreType"/>
+        <!-- Use http standard upload methods -->
+        <xs:element name="httpPOST" type="httpPostType"/>
+        <xs:element name="httpPUT" type="httpPutType"/>
+        <!-- Upload to youtube -->
+        <xs:element name="youtube" type="youtubeType"/>        
+        <!-- Upload to facebook -->
+        <xs:element name="facebook" type="facebookType"/>        
+        <!-- Upload to dailymotion -->
+        <xs:element name="dailymotion" type="dailymotionType"/>        
+        <!-- Upload to a s3 bucket -->
+        <xs:element name="s3" type="s3Type"/>        
+      </xs:choice>
+    </xs:sequence>
+    <!-- Main parameter:kind of profile to use, which then fix the dimensions, bitrate, codec etc of the video -->
+    <xs:attribute name="name" type="profileNameType"/>   
+  </xs:complexType>
+
+  <xs:complexType name="metaType">
+    <xs:all minOccurs="0">
+      <!-- meta used for uploads information, and send by notification calls too -->
+      <xs:element name="title"/>
+      <xs:element name="tags"/>
+      <xs:element name="description"/>
+      <xs:element name="author"/>
+      <xs:element name="date"/>
+      <xs:element name="location"/>
+      <xs:element name="license"/>
+      <xs:element name="copyright"/>
+      <xs:element name="acl" type="aclType"/>
+
+      <xs:element name="channels"/>
+      <xs:element name="group"/>
+      <xs:element name="groups"/>
+      <xs:element name="lang"/>
+      <xs:element name="country"/>
+      <xs:element name="city"/>
+
+
+      <!-- Stupeflix video generation directive -->
+      <!-- Generate preview -->
+      <xs:element name="preview" type="previewType"/>
+      <!-- Generate the thumbnail at the give time -->
+      <xs:element name="thumbnailTime" type="xs:float"/>
+
+    </xs:all>
+  </xs:complexType>
+
+  <!-- Preview flag type -->
+  <xs:simpleType name="previewType">
+    <xs:restriction base="xs:string">
+      <xs:pattern value="true|false"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <!-- ACL type, used for youtube dailymotion or Amazon S3 upload. -->
+  <xs:simpleType name="aclType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="public"/>
+      <xs:enumeration value="private"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <!-- Specify an upload to the Stupeflix temporary storage -->
+  <xs:complexType name="stupeflixStoreType">   
+    <xs:all minOccurs="0">
+      <xs:element name="meta"/>
+    </xs:all>
+  </xs:complexType>
+
+  <!-- Specify an HTTP POST based upload-->
+  <xs:complexType name="httpPostType">   
+    <xs:all minOccurs="0">
+      <xs:element name="meta"/>
+    </xs:all>
+    <xs:attribute name="url" type="xs:anyURI" use="required"/>
+  </xs:complexType>
+
+  <!-- Specify an HTTP PUT based upload-->
+  <xs:complexType name="httpPutType">   
+    <xs:all minOccurs="0">
+      <xs:element name="meta"/>
+    </xs:all>
+    <xs:attribute name="url" type="xs:anyURI" use="required"/>
+  </xs:complexType>
+
+  <!-- Specify an upload to youtube -->
+  <xs:complexType name="youtubeType">
+    <xs:all minOccurs="0">
+      <xs:element name="meta"/>
+    </xs:all>    
+    <xs:attribute name="login" type="xs:string"/>
+    <xs:attribute name="password" type="xs:string"/>
+    <xs:attribute name="developerkey" type="xs:string"/>
+    <xs:attribute name="source" type="xs:string"/>    
+    <xs:attribute name="sid" type="xs:string"/>
+  </xs:complexType>
+
+  <!-- Specify an upload to dailymotion -->
+  <xs:complexType name="dailymotionType">
+    <xs:all minOccurs="0">
+      <xs:element name="meta"/>
+    </xs:all>
+    <!-- you must specify a login and password  OR a valid session id -->
+    <xs:attribute name="login" type="xs:string"/>
+    <xs:attribute name="password" type="xs:string"/>
+    <xs:attribute name="sid" type="xs:string"/>
+  </xs:complexType>
+
+  <!-- Specify an upload to facebook -->
+  <xs:complexType name="facebookType">
+    <xs:all minOccurs="0">
+      <xs:element name="meta"/>
+    </xs:all>
+    <xs:attribute name="apikey" type="xs:string" use="required"/> <!-- Your Facebook API key -->
+    <xs:attribute name="secret" type="xs:string" use="required"/> <!-- This is your app secret (if your app is a Web App) or a session secret (if your app is a Desktop App). -->
+    <xs:attribute name="sid" type="xs:string" use="required"/> <!-- User session -->
+  </xs:complexType>
+
+
+  <!-- Specify an upload to an Amazon S3 bucket. -->
+  <xs:complexType name="s3Type">
+    <xs:all minOccurs="0">
+      <xs:element name="meta"/>
+    </xs:all>
+    <!-- Name of the Amazon S3 bucket to be written to. -->
+    <!-- The name of the uploaded files will be http://BUCKET.s3.amazonaws.com/RESOURCEPREFIX/ -->
+    <xs:attribute name="bucket" type="xs:string" use="required"/>
+    <xs:attribute name="resourcePrefix" type="xs:string" use="required"/>
+    <!-- Your amazon S3 public accesskey and your secret key -->
+    <!-- You can too set write privilege for your bucket for the Stupeflix Amazon S3 Key, so you do not have to specify your secret key. -->
+    <xs:attribute name="accesskey" type="xs:string" />
+    <xs:attribute name="secretkey" type="xs:string" />
+  </xs:complexType>
+
+  <xs:simpleType name="profileNameType">
+    <xs:restriction base="xs:string">
+      
+      <xs:enumeration value="iphone"/>
+      <xs:enumeration value="iphone-16-9"/>
+      <xs:enumeration value="iphone-flv"/>
+      <xs:enumeration value="iphone-slow"/>
+      <xs:enumeration value="youtube"/>
+      <xs:enumeration value="youtube-slow"/>
+      <xs:enumeration value="youtube-flv"/>
+      <xs:enumeration value="youtube-slow-flv"/>
+      <xs:enumeration value="quicktime"/>
+      <xs:enumeration value="quicktime-small"/>
+      <xs:enumeration value="flash"/>
+      <xs:enumeration value="flash-med-16-9"/>
+      <xs:enumeration value="flash-hq"/>
+      <xs:enumeration value="flash-small"/>
+      <xs:enumeration value="mobile"/>
+      <xs:enumeration value="mobile-small"/>
+      <xs:enumeration value="wmv1"/>
+      <xs:enumeration value="wmv2"/>
+
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:complexType name="notifyType">
+    <xs:attribute name="url" type="xs:anyURI" use="required"/>
+    <xs:attribute name="statusRegexp" />
+  </xs:complexType>
+
+</xs:schema>

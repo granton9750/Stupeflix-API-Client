@@ -1,0 +1,745 @@
+<?xml version="1.0"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+<!-- 
+  ##################################################       
+  # 
+  # The movie top level element 
+  #
+  ##################################################-->
+  <xs:element name="movie">
+    <xs:complexType>
+      <xs:all>
+	<xs:element name="body" type="sequence" minOccurs="1" maxOccurs="1"/>	
+      </xs:all>
+      <xs:attribute name="service" use="required" type="serviceType"/>
+    </xs:complexType>
+  </xs:element>
+
+  <!-- Service type : there is a single allowed service type today, craftsman-1.0 -->
+  <xs:simpleType name="serviceType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="craftsman-1.0"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+<!-- 
+  ##################################################       
+  # 
+  # Common attributes
+  #
+  ##################################################-->
+
+  <!-- time related attributes -->
+  <xs:attributeGroup name="timeAttributes">
+    <xs:attribute name="duration" type="durationType"/>
+    <xs:attribute name="start" type="xs:float"/>
+    <xs:attribute name="margin-start" type="xs:float"/>
+    <xs:attribute name="margin-end" type="xs:float"/>
+    <xs:attribute name="margin-both" type="xs:float"/>
+  </xs:attributeGroup>
+
+  <!-- Placement  -->
+  <xs:attributeGroup name="placement">
+    <xs:attribute name="top" type="positionType"/>
+    <xs:attribute name="bottom" type="positionType"/>
+    <xs:attribute name="left" type="positionType"/>
+    <xs:attribute name="right" type="positionType"/>
+    <xs:attribute name="width" type="positionType"/>
+    <xs:attribute name="height" type="positionType"/>
+  </xs:attributeGroup>
+  
+  <xs:simpleType name="positionType">
+    <xs:union memberTypes="xs:float">
+      <xs:simpleType>
+        <xs:restriction base="xs:string">
+          <xs:enumeration value="auto"/>
+        </xs:restriction>
+      </xs:simpleType>
+    </xs:union>
+  </xs:simpleType>
+
+  <!-- duration type -->
+  <xs:simpleType name="durationType">
+    <xs:restriction base="xs:string">
+    </xs:restriction>
+  </xs:simpleType>
+
+  <!-- Union of all  node type -->
+  <xs:group name="atoms">
+    <xs:choice>     
+      <xs:element name="sequence" type="sequence" />
+      <xs:element name="stack" type="stack" />
+      <xs:element name="effect" type="effect"/>
+      <xs:element name="text" type="text"/>
+      <xs:element name="overlay" type="overlay"/>
+      <xs:element name="sphere" type="sphere"/>
+      <xs:element name="audio" type="audio" />
+      <xs:element name="widget" type="widget" />
+    </xs:choice>
+  </xs:group>
+
+  <!-- Union of all  node type -->
+  <xs:group name="objectAtoms">
+    <xs:choice>   
+      <xs:element name="image" type="image" />
+      <xs:element name="video" type="video" />
+      <xs:element name="animator" type="animator" />
+      <xs:element name="filter" type="filter" />
+    </xs:choice>
+  </xs:group>
+
+  <!-- Image Media -->
+  <xs:group name="imagemedia">
+    <xs:choice>     
+      <xs:element name="image" type="image" />
+      <xs:element name="video" type="video" />
+    </xs:choice>
+  </xs:group>
+  
+  <!-- Modifiers -->
+  <xs:group name="modifiers">
+    <xs:choice>     
+      <xs:element name="filter" type="filter" />
+      <xs:element name="animator" type="animator" />
+    </xs:choice>
+  </xs:group>
+
+
+<!--
+  ##################################################       
+  # 
+  #  Structure: Sequence type
+  #
+  ##################################################-->  
+  <xs:complexType name="sequence">
+    <xs:sequence>
+      <xs:choice maxOccurs="unbounded">
+        <xs:group ref="atoms"/>
+        <xs:group ref="modifiers"/>
+        <xs:element name="transition" type="transition"/>
+      </xs:choice>
+    </xs:sequence>
+    <xs:attributeGroup ref="timeAttributes"/>
+  </xs:complexType>
+
+<!--
+  ##################################################       
+  # 
+  #  Structure: Stack type
+  #
+  ##################################################-->
+  <xs:complexType name="stack"> 
+    <xs:sequence>		
+      <xs:choice maxOccurs="unbounded" minOccurs="0">
+        <xs:group ref="atoms"/>
+        <xs:group ref="modifiers"/>
+        <xs:element name="camera" type="camera" />
+      </xs:choice>
+    </xs:sequence>
+    <xs:attributeGroup ref="timeAttributes"/>
+    <xs:attribute name="name" type="xs:string"/>
+    <xs:attribute name="screenWidth" type="xs:float"/>
+    <xs:attribute name="screenHeight" type="xs:float"/>
+  </xs:complexType>
+
+  <!-- Camera Type -->
+  <xs:complexType name="camera"> 
+    <xs:sequence>	
+      <xs:choice maxOccurs="unbounded" minOccurs="0">
+        <xs:element name="animator" type="animator" />
+      </xs:choice>
+    </xs:sequence>
+    <xs:attributeGroup ref="timeAttributes"/>
+    <!-- default value for relative is false.
+         If true the camera transformation is stacked on the current transformation instead of overriding the current camera
+      -->
+    <xs:attribute name="relative" type="bool"/>
+  </xs:complexType>
+
+<!--
+  ##################################################
+  #
+  #  Effect
+  #
+  ##################################################-->
+  <xs:complexType name="effect">
+    <xs:sequence minOccurs="0" maxOccurs="unbounded">
+      <xs:choice>
+        <xs:group ref="imagemedia"/>
+        <xs:group ref="atoms"/>
+        <xs:group ref="modifiers"/>
+      </xs:choice>
+    </xs:sequence>
+    <xs:attributeGroup ref="timeAttributes"/>
+    <xs:attribute name="type" type="effectType" use="required" />
+    <xs:attribute name="depthEnable" type="bool" />
+    <xs:attribute name="direction" type ="directionType"/>
+    <xs:attribute name="cameramove" type ="cameramoveType"/>
+    <xs:attribute name="filterType" type="xs:string" />
+    <xs:attribute name="transWidth" type="xs:float" />
+    <xs:attribute name="width" type="xs:float" />
+    <xs:attribute name="color" type="colorType" />
+    <xs:attribute name="adapter" type="xs:string" />
+  </xs:complexType>
+
+  <!-- Effect type -->
+  <xs:simpleType name="effectType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="none"/>
+      <xs:enumeration value="kenburns"/>
+      <xs:enumeration value="flower"/>
+      <xs:enumeration value="panel"/>
+      <xs:enumeration value="explode"/>
+      <xs:enumeration value="rotator"/>
+      <xs:enumeration value="diving"/>
+      <xs:enumeration value="sliding"/>
+      <xs:enumeration value="square"/>
+      <xs:enumeration value="rectangles"/>
+      <xs:enumeration value="slice"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <!-- Camera move type -->
+  <xs:simpleType name="cameramoveType">
+    <xs:restriction base="xs:string">
+      <xs:pattern value="(left|right|up|down)"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <!-- Direction type -->
+  <xs:simpleType name="directionType">
+    <xs:restriction base="xs:string">
+      <xs:pattern value="(positive|negative|left|right|up|down|static)"/>
+      <xs:pattern value="(-|[+])?[0-9]+([.][0-9]+)?,(-|[+])?[0-9]+([.][0-9]+)?"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+<!--
+  ##################################################       
+  #
+  # Widget type + Styling
+  #
+  ##################################################-->
+
+  <xs:complexType name="widget">
+    <xs:sequence minOccurs="0" maxOccurs="unbounded">
+      <xs:choice>
+<!--
+        <xs:group ref="imagemedia"/>
+        <xs:group ref="atoms"/>
+        <xs:group ref="modifiers"/>        
+        <xs:element name="style" type="style"/>
+-->
+        <xs:any processContents="lax"/>
+      </xs:choice>
+    </xs:sequence>
+    <xs:attributeGroup ref="timeAttributes"/>
+    <xs:attribute name="type" type="xs:string" use="required" />
+    <xs:anyAttribute processContents="lax" />
+  </xs:complexType>
+
+  <xs:complexType name="style">
+    <xs:attribute name="layer" type="xs:string"/>
+    <xs:attribute name="color" type="colorType"/>
+  </xs:complexType>
+
+<!--
+  ##################################################       
+  # 
+  #  Transition: specific to the sequence type
+  #
+  ##################################################-->
+  <xs:complexType name="transition">
+    <xs:sequence minOccurs="0" maxOccurs="unbounded">
+      <xs:choice maxOccurs="unbounded">
+        <xs:group ref="atoms"/>
+      </xs:choice>
+    </xs:sequence>
+
+    <xs:attribute name="duration" type="durationType"/>
+    <xs:attribute name="start" type="xs:float"/>
+    <xs:attribute name="type" type="transitionType"/>
+    <xs:attribute name="direction" type="directionType"/>
+    <xs:attribute name="rotCenter" type="rotCenterType"/>
+    <xs:attribute name="angle" type="xs:float"/>
+    <xs:attribute name="directions" type="directionsType"/>
+    <xs:attribute name="rotCenters" type="rotCentersType"/>
+    <xs:attribute name="angles" type="floatCouple"/>
+    <xs:attribute name="depthEnable" type="bool"/>
+    <xs:attribute name="drawOrder" type="drawOrderType"/>
+  </xs:complexType>
+
+  <xs:simpleType name="transitionType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="crossfade"/>
+      <xs:enumeration value="waterdrop"/>
+      <xs:enumeration value="circle"/>
+      <xs:enumeration value="radial"/>
+      <xs:enumeration value="swirl"/>
+      <xs:enumeration value="strip"/>
+      <xs:enumeration value="scan"/>
+      <xs:enumeration value="scans"/>
+      <xs:enumeration value="move"/>
+      <xs:enumeration value="over"/>
+      <xs:enumeration value="under"/>
+      <xs:enumeration value="cube"/>
+      <xs:enumeration value="spiral"/>
+      <xs:enumeration value="dualmove"/>
+      <xs:enumeration value="custom"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="directionsType">
+    <xs:restriction base="xs:string">
+      <xs:pattern value="(positive|negative|left|right|up|down|static),(positive|negative|left|right|up|down|static)"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="rotCenterType">
+    <xs:restriction base="xs:string">
+      <xs:pattern value="(middle|left|right|top|bottom)"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="rotCentersType">
+    <xs:restriction base="xs:string">
+      <xs:pattern value="(hmiddle|vmiddle|left|right|top|bottom),(hmiddle|vmiddle|middle|left|right|top|bottom)"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="drawOrderType">
+    <xs:restriction base="xs:string">
+      <xs:pattern value="normal|inverted"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+ <!-- 
+  ##################################################
+  # 
+  #  Text
+  #
+  ##################################################-->
+  <xs:complexType name="text" mixed="true">
+    <xs:sequence minOccurs="0" maxOccurs="unbounded">
+      <xs:choice maxOccurs="unbounded">
+        <xs:element name="filter" type="filter" />
+        <xs:element name="animator" type="animator" />
+      </xs:choice>
+    </xs:sequence>
+
+    <xs:attribute name="type" type="textType"/>
+    <xs:attribute name="name" type="xs:string"/>
+    <xs:attributeGroup ref="timeAttributes"/>
+
+    <xs:attribute name="align" type="textAlignType"/>
+    <xs:attribute name="direction" type="textDirectionType"/>
+    <xs:attribute name="fontsize" type="fontSizeType"/>
+    <xs:attribute name="fontname"/>
+    <xs:attribute name="face"/>
+    <xs:attribute name="weight"/>
+    <xs:attribute name="style"/>
+    <xs:attribute name="stretch"/>
+    <xs:attribute name="fontcolor" type="colorType"/>
+    <xs:attribute name="backgroundcolor" type="colorType"/>
+    <xs:attribute name="speed"/>
+    <xs:attribute name="vector" type="bool"/>
+    <xs:attribute name="reference" type="xs:string"/>
+
+    <xs:attributeGroup ref="placement"/>
+
+    <xs:attribute name="wrap" type="bool"/>
+    <xs:attribute name="interlign" type="xs:float"/>
+    <xs:attribute name="depthEnable" type="bool"/>
+  </xs:complexType>
+
+  <xs:simpleType name="textType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="legend"/>
+      <xs:enumeration value="zone"/>
+      <xs:enumeration value="advanced"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="textAlignType">
+    <xs:restriction base="xs:string">
+      <xs:pattern value="(left|right|center|bottom|top|justify)|((left|right|center|justify)(,(center|bottom|top))?)"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="fontSizeType">
+    <xs:restriction base="xs:float"/>
+  </xs:simpleType>
+
+  <xs:simpleType name="textDirectionType">
+    <xs:restriction base="xs:string">
+      <xs:pattern value="(left|right|up|down|static)"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+<!--
+  ##################################################
+  # 
+  #  Overlay
+  #
+  ##################################################-->
+  <xs:complexType name="overlay" >
+    <xs:sequence minOccurs="0" maxOccurs="unbounded">
+      <xs:choice maxOccurs="unbounded">
+        <xs:group ref="objectAtoms"/>
+        <xs:group ref="atoms"/>
+      </xs:choice>
+    </xs:sequence>
+    <xs:attributeGroup ref="timeAttributes"/>
+
+    <xs:attributeGroup ref="placement"/>
+
+    <xs:attribute name="depthEnable" type="bool"/>    
+    <xs:attribute name="name" />    
+  </xs:complexType>
+
+<!--
+  ##################################################
+  # 
+  #  Sphere
+  #
+  ##################################################-->
+  <xs:complexType name="sphere" >
+    <xs:sequence minOccurs="0" maxOccurs="unbounded">
+      <xs:choice maxOccurs="unbounded">
+        <xs:group ref="objectAtoms"/>
+        <xs:group ref="atoms"/>
+      </xs:choice>
+    </xs:sequence>
+    <xs:attributeGroup ref="timeAttributes"/>
+
+    <xs:attribute name="radius" type="xs:float"/>
+    <xs:attribute name="position" type="floatTriplet"/>
+  </xs:complexType>
+
+
+<!-- 
+  ##################################################
+  # 
+  #  Image
+  #
+  ##################################################-->
+  <xs:complexType name="image">
+    <xs:sequence minOccurs="0" maxOccurs="unbounded">
+      <xs:element name="filter" type="filter" />
+    </xs:sequence>
+    <xs:attribute name="name" type="xs:string"/>
+    <xs:attribute name="filename" />
+    <xs:attribute name="color" type="colorType"/>
+    <xs:attribute name="width" type="xs:nonNegativeInteger"/>
+    <xs:attribute name="height" type="xs:nonNegativeInteger"/>
+    <xs:attribute name="duration" type="durationType"/>
+    <xs:attribute name="type" type="imageType"/>
+
+    <xs:attribute name="nativeHeightRatio" type="xs:float"/>
+
+    <!-- map attributes -->
+    <xs:attribute name="mapkey" type="xs:string"/> <!-- deprecated -->
+    <xs:attribute name="center" type="xs:string"/>
+    <xs:attribute name="size" />
+    <xs:attribute name="zoom" type="xs:float" />
+    <xs:attribute name="markers"/>
+    <xs:attribute name="maptype"/>
+  </xs:complexType>
+
+  <xs:simpleType name="imageType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="map"/>
+    </xs:restriction>
+  </xs:simpleType> 
+  
+  <xs:simpleType name="colorType">
+    <xs:restriction base="xs:string">
+      <xs:pattern value="#([a-fA-F0-9]{6}|[a-fA-F0-9]{8})"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+
+<!-- 
+  ##################################################
+  # 
+  #  Video
+  #
+  ##################################################-->
+  <xs:complexType name="video">
+    <xs:sequence minOccurs="0" maxOccurs="unbounded">
+      <xs:element name="filter" type="filter" />
+    </xs:sequence>
+    <xs:attribute name="name" type="xs:string"/>
+    <xs:attribute name="filename" use="required"/>
+    <xs:attribute name="skip" type="durationType"/>
+    <xs:attribute name="audio" type="bool"/>    
+    <xs:attribute name="volume" type="audioVolumeType"/>
+    <xs:attribute name="duration" type="durationType"/>
+    <xs:attribute name="margin-start" type="xs:float"/>
+    <xs:attribute name="speed" type="xs:float"/>
+    <xs:attribute name="audiospeed" type="xs:float"/>
+  </xs:complexType>
+
+<!-- 
+  ##################################################
+  # 
+  #  Audio
+  #
+  ##################################################-->
+  <xs:complexType name="audio" mixed="true">
+    <xs:attributeGroup ref="timeAttributes"/>
+    <xs:attribute name="name" type="xs:string"/>
+    <xs:attribute name="filename"/>
+    <xs:attribute name="volume" type="audioVolumeType"/>
+    <xs:attribute name="fadein" type="durationType"/>
+    <xs:attribute name="fadeout" type="durationType"/>
+    <xs:attribute name="skip" type="durationType"/>
+    <xs:attribute name="voice" type="voiceType"/>
+    <xs:attribute name="speed" type="xs:float"/>
+  </xs:complexType>
+
+  <xs:simpleType name="voiceType">
+    <xs:restriction base="xs:string">
+      <xs:pattern value="neospeech:.*"/>
+      <xs:pattern value="acapela:.*"/>
+      <!--  
+      <xs:enumeration value="neospeech:paul"/> 
+      <xs:enumeration value="neospeech:kate"/> 
+      <xs:enumeration value="neospeech:julie"/>
+      -->
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="audioVolumeType">
+    <xs:restriction base="xs:float">
+      <xs:minInclusive value="0.0"/>
+      <xs:maxInclusive value="10.0"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+<!-- 
+  ##################################################
+  # 
+  #  Animator
+  #
+  ##################################################-->
+  <xs:complexType name="animator">
+    <xs:sequence minOccurs="0" maxOccurs="unbounded">
+      <xs:element name="key" type="keyType" />
+    </xs:sequence>
+    <xs:attribute name="type" type="animatorType" use="required"/>
+    <xs:attribute name="direction" type="animatorDirectionType"/>
+    <xs:attributeGroup ref="timeAttributes"/>
+    <xs:attribute name="angle" />
+    <xs:attribute name="growStart" />
+    <xs:attribute name="growEnd" />
+    <xs:attribute name="mode" type="animatorModeType"/>
+  </xs:complexType>
+
+  <xs:complexType name="keyType">
+    <xs:attribute name="time" type="xs:float"/>
+    <xs:anyAttribute processContents="lax" />
+  </xs:complexType>
+
+  <xs:simpleType name="animatorType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="slide"/>
+      <xs:enumeration value="slide-in"/>
+      <xs:enumeration value="slide-out"/>
+      <xs:enumeration value="rot-in"/>
+      <xs:enumeration value="rot-out"/>
+      <xs:enumeration value="grow"/>
+      <xs:enumeration value="custom"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="animatorModeType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="linear"/>
+      <xs:enumeration value="quadratic"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="animatorDirectionType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="left"/>
+      <xs:enumeration value="right"/>
+      <xs:enumeration value="up"/>
+      <xs:enumeration value="down"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+
+<!-- 
+  ##################################################
+  # 
+  #  Filter
+  #
+  ##################################################-->
+  <xs:complexType name="filter">
+    <xs:sequence minOccurs="0" maxOccurs="unbounded">
+      <xs:choice maxOccurs="unbounded">
+        <xs:element name="image" type="image" />
+        <xs:element name="video" type="video" />
+        <xs:element name="filter" type="filter" />
+        <xs:element name="animator" type="animator" />
+        <xs:group ref="atoms"/>
+      </xs:choice>
+    </xs:sequence>
+    
+    <xs:attributeGroup ref="timeAttributes"/>
+    <xs:attribute name="type" type="filterType" use="required"/>
+    <xs:attribute name="color" type="colorType" />
+    <xs:attribute name="whiteColor" type="colorType" />
+    <xs:attribute name="blackColor" type="colorType" />
+    <xs:attribute name="mediumColor" type="colorType" />
+    <xs:attribute name="opaqueColor" type="colorType" />
+    <xs:attribute name="transparentColor" type="colorType" />
+    <xs:attribute name="rgba-bias-matrix" type="rgba-bias-matrixType"/>
+    <xs:attribute name="preset"/>
+    <xs:attribute name="threshold" type="xs:float"/>
+    <xs:attribute name="originalBlend" type="xs:float"/>
+    <xs:attribute name="diameter" type="xs:float"/>
+    <xs:attribute name="margin" type="xs:float"/>
+    <xs:attribute name="width" type="xs:float"/>
+    <xs:attribute name="colorWidth" type="xs:float"/>
+    <xs:attribute name="transWidth" type="xs:float"/>
+    <xs:attribute name="height" type="xs:float"/>
+    <xs:attribute name="aspectRatio" type="xs:float"/>   
+    <xs:attribute name="rate" type="xs:float"/>
+    <xs:attribute name="gamma" type="xs:float"/>
+    <xs:attribute name="offset" type="xs:float"/>
+    <xs:attribute name="alphaStart" type="xs:float"/>
+    <xs:attribute name="alphaEnd" type="xs:float"/>
+    <xs:attribute name="direction" type="directionType"/>
+    <xs:attribute name="angle" type="xs:float"/>
+    <xs:attribute name="center" type="floatCouple"/>
+    <xs:attribute name="centerStart" type="floatCouple"/>
+    <xs:attribute name="centerEnd" type="floatCouple"/>
+    <xs:attribute name="zoomStart" type="xs:float"/>
+    <xs:attribute name="zoomEnd" type="xs:float"/>
+    <xs:attribute name="zoomLimit" type="bool"/>
+    <xs:attribute name="security" type="bool"/>
+    <xs:attribute name="distanceWidth" type="xs:float"/>
+    <xs:attribute name="fillOpacity" type="xs:float"/>
+    <xs:attribute name="strokeWidth" type="xs:float"/>
+    <xs:attribute name="strokeColor" type="colorType"/>
+    <xs:attribute name="strokeOpacity" type="xs:float"/>
+    <xs:attribute name="strokePosition" type="strokePositionType"/>
+    <xs:attribute name="innerShadowColor" type="colorType"/>
+    <xs:attribute name="innerShadowOpacity" type="xs:float"/>
+    <xs:attribute name="innerShadowPosition" type="floatCouple"/>
+    <xs:attribute name="innerShadowAngle" type="xs:float"/>
+    <xs:attribute name="innerShadowDistance" type="xs:float"/>
+    <xs:attribute name="innerShadowWidth" type="xs:float"/>
+    <xs:attribute name="innerShadowBlurWidth" type="xs:float"/>
+    <xs:attribute name="dropShadowColor" type="colorType"/>
+    <xs:attribute name="dropShadowOpacity" type="xs:float"/>
+    <xs:attribute name="dropShadowPosition" type="floatCouple"/>
+    <xs:attribute name="dropShadowAngle" type="xs:float"/>
+    <xs:attribute name="dropShadowDistance" type="xs:float"/>
+    <xs:attribute name="dropShadowWidth" type="xs:float"/>
+    <xs:attribute name="dropShadowBlurWidth" type="xs:float"/>
+    <xs:attribute name="outerGlowColor" type="colorType"/>
+    <xs:attribute name="outerGlowOpacity" type="xs:float"/>
+    <xs:attribute name="outerGlowWidth" type="xs:float"/>
+    <xs:attribute name="outerGlowBlurWidth" type="xs:float"/>
+    <xs:attribute name="innerGlowColor" type="colorType"/>
+    <xs:attribute name="innerGlowOpacity" type="xs:float"/>
+    <xs:attribute name="innerGlowWidth" type="xs:float"/>
+    <xs:attribute name="innerGlowBlurWidth" type="xs:float"/>
+    <xs:attribute name="depthEnable" type="bool"/>
+  </xs:complexType>
+
+  <xs:simpleType name="strokePositionType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="outside"/>
+      <xs:enumeration value="inside"/>
+      <xs:enumeration value="center"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="filterType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="colormap"/>
+      <xs:enumeration value="tint"/>
+      <xs:enumeration value="threetint"/>
+      <xs:enumeration value="threshold"/>
+      <xs:enumeration value="bleach"/>
+      <xs:enumeration value="displacement"/>
+      <xs:enumeration value="distancemap"/>
+      <xs:enumeration value="distancecolor"/>
+      <xs:enumeration value="hblur"/>
+      <xs:enumeration value="vblur"/>
+      <xs:enumeration value="blur"/>
+      <xs:enumeration value="exposure"/>
+      <xs:enumeration value="hgaussianBlur"/>
+      <xs:enumeration value="vgaussianBlur"/>
+      <xs:enumeration value="gaussianBlur"/>
+      <xs:enumeration value="directionalBlur"/>
+      <xs:enumeration value="maskedBlur"/>
+      <xs:enumeration value="bilateralBlur"/>
+      <xs:enumeration value="alpha"/>
+      <xs:enumeration value="flick"/>
+      <xs:enumeration value="glow"/>
+      <xs:enumeration value="grow"/>
+      <xs:enumeration value="frame"/>
+      <xs:enumeration value="borderBlur"/>
+      <xs:enumeration value="tv"/>
+      <xs:enumeration value="flashback"/>
+      <xs:enumeration value="noise"/>
+      <xs:enumeration value="cornerCut"/>
+      <xs:enumeration value="fixedAdapter"/>
+      <xs:enumeration value="fitAdapter"/>
+      <xs:enumeration value="panoramicAdapter"/>
+      <xs:enumeration value="zoomAdapter"/>
+      <xs:enumeration value="kenburnsAdapter"/>
+      <xs:enumeration value="identity"/>
+      <xs:enumeration value="combine"/>
+      <xs:enumeration value="mask"/>
+      <xs:enumeration value="alphamask"/>
+      <xs:enumeration value="alphainvmask"/>
+      <xs:enumeration value="lumamask"/>
+      <xs:enumeration value="lumainvmask"/>
+      <xs:enumeration value="key"/>
+      <xs:enumeration value="makeTransparent"/>
+      <xs:enumeration value="subRender"/>
+      <xs:enumeration value="dof"/>
+      <xs:enumeration value="antialias"/>
+      <xs:enumeration value="quad"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="rgba-bias-matrixType">
+    <xs:restriction base="xs:string">
+      <xs:pattern value="(#[a-fA-F0-9]{8},){4}#[a-fA-F0-9]{8}"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+<!-- 
+  ##################################################
+  # 
+  #  Common types
+  #
+  ##################################################-->
+  <xs:simpleType name="bool">
+    <xs:restriction base="xs:string">
+      <xs:pattern value="true|false"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="floatCouple">
+    <xs:restriction base="xs:string">
+      <xs:pattern value="(-|[+])?[0-9]+([.][0-9]+)?,(-|[+])?[0-9]+([.][0-9]+)?"/>
+    </xs:restriction>
+  </xs:simpleType>   
+
+  <xs:simpleType name="floatTriplet">
+    <xs:restriction base="xs:string">
+      <xs:pattern value="(-|[+])?[0-9]+([.][0-9]+)?,(-|[+])?[0-9]+([.][0-9]+)?,(-|[+])?[0-9]+([.][0-9]+)?"/>
+    </xs:restriction>
+  </xs:simpleType>   
+
+
+</xs:schema>

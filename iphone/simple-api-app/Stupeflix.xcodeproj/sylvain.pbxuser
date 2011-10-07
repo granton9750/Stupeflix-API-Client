@@ -1,0 +1,325 @@
+// !$*UTF8*$!
+{
+	1D3623240D0F684500981E51 /* StupeflixAppDelegate.h */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {798, 416}}";
+			sepNavSelRange = "{0, 0}";
+			sepNavVisRange = "{0, 497}";
+		};
+	};
+	1D3623250D0F684500981E51 /* StupeflixAppDelegate.m */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {798, 406}}";
+			sepNavSelRange = "{481, 0}";
+			sepNavVisRange = "{0, 564}";
+		};
+	};
+	1D6058900D05DD3D006BFB54 /* Stupeflix */ = {
+		activeExec = 0;
+		executables = (
+			E41A3E57105CF85A005E8920 /* Stupeflix */,
+		);
+	};
+	28D7ACF60DDB3853001CB0EB /* StupeflixViewController.h */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {798, 429}}";
+			sepNavSelRange = "{902, 0}";
+			sepNavVisRange = "{0, 931}";
+		};
+	};
+	28D7ACF70DDB3853001CB0EB /* StupeflixViewController.m */ = {
+		uiCtxt = {
+			sepNavFolds = "{\n    c =     (\n                {\n            r = \"{809, 235}\";\n            s = 0;\n        },\n                {\n            r = \"{1086, 495}\";\n            s = 0;\n        },\n                {\n            r = \"{1620, 520}\";\n            s = 0;\n        },\n                {\n            r = \"{2166, 124}\";\n            s = 0;\n        }\n    );\n    r = \"{0, 2492}\";\n    s = 0;\n}";
+			sepNavIntBoundsRect = "{{0, 0}, {798, 624}}";
+			sepNavSelRange = "{684, 0}";
+			sepNavVisRange = "{0, 769}";
+		};
+	};
+	29B97313FDCFA39411CA2CEA /* Project object */ = {
+		activeBuildConfigurationName = Debug;
+		activeExecutable = E41A3E57105CF85A005E8920 /* Stupeflix */;
+		activeSDKPreference = iphonesimulator3.1.2;
+		activeTarget = 1D6058900D05DD3D006BFB54 /* Stupeflix */;
+		addToTargets = (
+			1D6058900D05DD3D006BFB54 /* Stupeflix */,
+		);
+		codeSenseManager = E41A3E63105CF879005E8920 /* Code sense */;
+		executables = (
+			E41A3E57105CF85A005E8920 /* Stupeflix */,
+		);
+		perUserDictionary = {
+			PBXConfiguration.PBXFileTableDataSource3.PBXFileTableDataSource = {
+				PBXFileTableDataSourceColumnSortingDirectionKey = "-1";
+				PBXFileTableDataSourceColumnSortingKey = PBXFileDataSource_Filename_ColumnID;
+				PBXFileTableDataSourceColumnWidthsKey = (
+					20,
+					620,
+					20,
+					48,
+					43,
+					43,
+					20,
+				);
+				PBXFileTableDataSourceColumnsKey = (
+					PBXFileDataSource_FiletypeID,
+					PBXFileDataSource_Filename_ColumnID,
+					PBXFileDataSource_Built_ColumnID,
+					PBXFileDataSource_ObjectSize_ColumnID,
+					PBXFileDataSource_Errors_ColumnID,
+					PBXFileDataSource_Warnings_ColumnID,
+					PBXFileDataSource_Target_ColumnID,
+				);
+			};
+			PBXPerProjectTemplateStateSaveDate = 279659638;
+			PBXWorkspaceStateSaveDate = 279659638;
+		};
+		perUserProjectItems = {
+			E41A3E9A105D0A74005E8920 /* PBXTextBookmark */ = E41A3E9A105D0A74005E8920 /* PBXTextBookmark */;
+			E4F1A51B10AB1B13000F4018 /* PlistBookmark */ = E4F1A51B10AB1B13000F4018 /* PlistBookmark */;
+			E4F1A56C10AB2825000F4018 /* PBXTextBookmark */ = E4F1A56C10AB2825000F4018 /* PBXTextBookmark */;
+			E4F1A5B610AB386D000F4018 /* PBXTextBookmark */ = E4F1A5B610AB386D000F4018 /* PBXTextBookmark */;
+			E4F1A5B910AB386D000F4018 /* PBXTextBookmark */ = E4F1A5B910AB386D000F4018 /* PBXTextBookmark */;
+			E4F1A5BA10AB386D000F4018 /* PBXTextBookmark */ = E4F1A5BA10AB386D000F4018 /* PBXTextBookmark */;
+			E4F1A5BC10AB386D000F4018 /* PBXTextBookmark */ = E4F1A5BC10AB386D000F4018 /* PBXTextBookmark */;
+			E4F1A5C610AB423A000F4018 /* PBXTextBookmark */ = E4F1A5C610AB423A000F4018 /* PBXTextBookmark */;
+			E4F1A5E510AB4583000F4018 /* PBXTextBookmark */ = E4F1A5E510AB4583000F4018 /* PBXTextBookmark */;
+			E4F1A5E610AB4583000F4018 /* PBXTextBookmark */ = E4F1A5E610AB4583000F4018 /* PBXTextBookmark */;
+			E4F1A5E710AB4583000F4018 /* PBXTextBookmark */ = E4F1A5E710AB4583000F4018 /* PBXTextBookmark */;
+			E4F1A5E810AB4583000F4018 /* PBXTextBookmark */ = E4F1A5E810AB4583000F4018 /* PBXTextBookmark */;
+			E4F1A5E910AB4583000F4018 /* PBXTextBookmark */ = E4F1A5E910AB4583000F4018 /* PBXTextBookmark */;
+		};
+		sourceControlManager = E41A3E62105CF879005E8920 /* Source Control */;
+		userBuildSettings = {
+		};
+	};
+	8D1107310486CEB800E47090 /* Stupeflix-Info.plist */ = {
+		uiCtxt = {
+			sepNavWindowFrame = "{{78, 43}, {1310, 830}}";
+		};
+	};
+	E41A3E57105CF85A005E8920 /* Stupeflix */ = {
+		isa = PBXExecutable;
+		activeArgIndices = (
+		);
+		argumentStrings = (
+		);
+		autoAttachOnCrash = 1;
+		breakpointsEnabled = 0;
+		configStateDict = {
+		};
+		customDataFormattersEnabled = 1;
+		dataTipCustomDataFormattersEnabled = 1;
+		dataTipShowTypeColumn = 1;
+		dataTipSortType = 0;
+		debuggerPlugin = GDBDebugging;
+		disassemblyDisplayState = 0;
+		dylibVariantSuffix = "";
+		enableDebugStr = 1;
+		environmentEntries = (
+		);
+		executableSystemSymbolLevel = 0;
+		executableUserSymbolLevel = 0;
+		libgmallocEnabled = 0;
+		name = Stupeflix;
+		savedGlobals = {
+		};
+		showTypeColumn = 0;
+		sourceDirectories = (
+		);
+	};
+	E41A3E62105CF879005E8920 /* Source Control */ = {
+		isa = PBXSourceControlManager;
+		fallbackIsa = XCSourceControlManager;
+		isSCMEnabled = 0;
+		scmConfiguration = {
+			repositoryNamesForRoots = {
+				"" = sylvaingarrigues.com;
+			};
+		};
+	};
+	E41A3E63105CF879005E8920 /* Code sense */ = {
+		isa = PBXCodeSenseManager;
+		indexTemplatePath = "";
+	};
+	E41A3E6D105D0813005E8920 /* Stupeflix.h */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {866, 429}}";
+			sepNavSelRange = "{205, 0}";
+			sepNavVisRange = "{0, 668}";
+		};
+	};
+	E41A3E6E105D0813005E8920 /* Stupeflix.m */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {1342, 767}}";
+			sepNavSelRange = "{302, 123}";
+			sepNavVisRange = "{169, 1883}";
+		};
+	};
+	E41A3E6F105D0813005E8920 /* StupeflixBase.h */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {1307, 702}}";
+			sepNavSelRange = "{2381, 0}";
+			sepNavVisRange = "{724, 1663}";
+		};
+	};
+	E41A3E70105D0813005E8920 /* StupeflixBase.m */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {1314, 2353}}";
+			sepNavSelRange = "{2724, 0}";
+			sepNavVisRange = "{2140, 1623}";
+		};
+	};
+	E41A3E71105D0813005E8920 /* NSData+Crypto.h */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {798, 429}}";
+			sepNavSelRange = "{0, 0}";
+			sepNavVisRange = "{0, 354}";
+		};
+	};
+	E41A3E72105D0813005E8920 /* NSData+Crypto.m */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {1286, 1417}}";
+			sepNavSelRange = "{0, 0}";
+			sepNavVisRange = "{2322, 1003}";
+		};
+	};
+	E41A3E76105D0833005E8920 /* movie.xml */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {1202, 4498}}";
+			sepNavSelRange = "{0, 0}";
+			sepNavVisRange = "{0, 3363}";
+		};
+	};
+	E41A3E9A105D0A74005E8920 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = E41A3E76105D0833005E8920 /* movie.xml */;
+		name = "movie.xml: 1";
+		rLen = 0;
+		rLoc = 0;
+		rType = 0;
+		vrLen = 3363;
+		vrLoc = 0;
+	};
+	E4F1A51B10AB1B13000F4018 /* PlistBookmark */ = {
+		isa = PlistBookmark;
+		fRef = E4EC5408105D1DE5005AA66F /* Entitlements.plist */;
+		fallbackIsa = PBXBookmark;
+		isK = 0;
+		kPath = (
+			"get-task-allow",
+		);
+		name = /Users/sylvain/Documents/Boulot/sylvaingarrigues.com/Clients/Stupeflix/svn/Entitlements.plist;
+		rLen = 0;
+		rLoc = 9223372036854775808;
+	};
+	E4F1A56C10AB2825000F4018 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 1D3623250D0F684500981E51 /* StupeflixAppDelegate.m */;
+		name = "StupeflixAppDelegate.m: 24";
+		rLen = 0;
+		rLoc = 481;
+		rType = 0;
+		vrLen = 564;
+		vrLoc = 0;
+	};
+	E4F1A5B610AB386D000F4018 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 28D7ACF60DDB3853001CB0EB /* StupeflixViewController.h */;
+		name = "StupeflixViewController.h: 29";
+		rLen = 0;
+		rLoc = 902;
+		rType = 0;
+		vrLen = 931;
+		vrLoc = 0;
+	};
+	E4F1A5B910AB386D000F4018 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = E41A3E71105D0813005E8920 /* NSData+Crypto.h */;
+		name = "NSData+Crypto.h: 1";
+		rLen = 0;
+		rLoc = 0;
+		rType = 0;
+		vrLen = 354;
+		vrLoc = 0;
+	};
+	E4F1A5BA10AB386D000F4018 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = E41A3E6D105D0813005E8920 /* Stupeflix.h */;
+		name = "Stupeflix.h: 11";
+		rLen = 0;
+		rLoc = 205;
+		rType = 0;
+		vrLen = 668;
+		vrLoc = 0;
+	};
+	E4F1A5BC10AB386D000F4018 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = E41A3E70105D0813005E8920 /* StupeflixBase.m */;
+		name = "StupeflixBase.m: 74";
+		rLen = 0;
+		rLoc = 2724;
+		rType = 0;
+		vrLen = 1623;
+		vrLoc = 2140;
+	};
+	E4F1A5C610AB423A000F4018 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = E41A3E6F105D0813005E8920 /* StupeflixBase.h */;
+		name = "StupeflixBase.h: 52";
+		rLen = 0;
+		rLoc = 2381;
+		rType = 0;
+		vrLen = 1663;
+		vrLoc = 724;
+	};
+	E4F1A5E510AB4583000F4018 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = E41A3E72105D0813005E8920 /* NSData+Crypto.m */;
+		name = "NSData+Crypto.m: 1";
+		rLen = 0;
+		rLoc = 0;
+		rType = 0;
+		vrLen = 1003;
+		vrLoc = 2322;
+	};
+	E4F1A5E610AB4583000F4018 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = E41A3E6E105D0813005E8920 /* Stupeflix.m */;
+		name = "Stupeflix.m: 16";
+		rLen = 123;
+		rLoc = 302;
+		rType = 0;
+		vrLen = 1883;
+		vrLoc = 169;
+	};
+	E4F1A5E710AB4583000F4018 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 28D7ACF70DDB3853001CB0EB /* StupeflixViewController.m */;
+		name = "StupeflixViewController.m: 24";
+		rLen = 0;
+		rLoc = 684;
+		rType = 0;
+		vrLen = 769;
+		vrLoc = 0;
+	};
+	E4F1A5E810AB4583000F4018 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 1D3623240D0F684500981E51 /* StupeflixAppDelegate.h */;
+		name = "StupeflixAppDelegate.h: 1";
+		rLen = 0;
+		rLoc = 0;
+		rType = 0;
+		vrLen = 497;
+		vrLoc = 0;
+	};
+	E4F1A5E910AB4583000F4018 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 1D3623240D0F684500981E51 /* StupeflixAppDelegate.h */;
+		name = "StupeflixAppDelegate.h: 1";
+		rLen = 0;
+		rLoc = 0;
+		rType = 0;
+		vrLen = 497;
+		vrLoc = 0;
+	};
+}

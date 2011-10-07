@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head profile="http://www.w3.org/2005/10/profile">
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+  <title>Simple Ajax Progress Bar</title>
+  <style type="text/css" media="screen">
+    
+    html {
+      font-family: "Arial";
+      font-size: 14px;
+    }
+    
+    .PgBar {
+      border: 1px solid #000;
+      -moz-border-radius: 3px;
+      -webkit-border-radius: 3px;
+      -moz-box-shadow: inset rgba(0,0,0,0.5) 0px 1px 5px;
+      -webkit-box-shadow: inset rgba(0,0,0,0.5) 0px 1px 5px;
+    }
+    
+    .PgBar .inner {
+      height: 20px;
+      background: #26F; 
+      width: 0%;
+    }
+    
+  </style>
+</head>
+
+<body>
+
+  <h1>Stupeflix Ajax Progress Bar Demo</h1>
+  <button id="generateBtn">Start Generation</button>  
+    
+  <script type="text/javascript" charset="utf-8" src="mootools-1.2.4-core-yc.js"></script>
+  <script type="text/javascript" charset="utf-8" src="progress-bar.js"></script>  
+  <script type="text/javascript" charset="utf-8">
+    
+    PgBar.initialize();
+    var body = window.document.body;
+    
+    var button = $('generateBtn');
+    button.addEvent('click', function(){
+      
+      PgBar.start(generationComplete, handleError); // start the generation and passes callbacks
+      
+      // hide the button
+      body.removeChild(button);
+      // show the pgBar
+      body.appendChild(PgBar.view);
+    });
+    
+    function generationComplete(videoUrl){
+      // hide the pgBar
+      body.removeChild(PgBar.view);
+      
+      // show results
+      body.appendChild(new Element('h3', {html: 'Generation is complete !'}));
+      body.appendChild(new Element('a', {href: videoUrl, html: videoUrl}));
+    }
+    
+    function handleError(errorDesc){
+      // hide the pgBar
+      body.removeChild(PgBar.view);
+      
+      // show error
+      body.appendChild(new Element('h3', {html: 'Error'}));
+      body.appendChild(new Element('p', {html: errorDesc}));
+    }
+
+  </script>
+
+</body>
+</html>

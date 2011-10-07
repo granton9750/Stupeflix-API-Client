@@ -1,0 +1,55 @@
+body {
+  font-family: Arial;
+  font-size: 12px;
+  margin: 1em 2em;
+}
+
+h1 {
+  font-weight: normal;
+  border-bottom: 1px solid #000;
+  margin: 0 0 1em 0;
+}
+
+h2 {
+  margin: 0 0 2px;
+}
+
+a {
+  color: #06C;
+}
+
+.section {
+  margin-bottom: 2em;
+}
+
+p.infos {
+  margin: 0.5em 0;
+  color: #666;
+}
+
+#SxEditor {
+  width: 900px;
+  height: 500px;
+  border: 1px solid black;
+  background: #EEE url('./images/spinner.gif') no-repeat center center;
+}
+
+table.params th {
+  text-align: right;
+  background: #EEE;  
+  line-height: 1.6em;
+}
+
+table.params th,
+table.params td {
+  padding: 0 5px;
+}
+
+form {
+  border-top: 1px solid #000;
+  padding: 1em;
+}
+
+form button {
+  font-size: 100%;
+}
