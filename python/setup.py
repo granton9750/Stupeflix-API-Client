@@ -34,6 +34,6 @@ setup(name='stupeflix_api',
     install_requires=install_requires,
     entry_points={
         'console_scripts':
-            ['stupeflix_api=stupeflix_api:main']
+            ['stupeflix-api=stupeflix_api.commandline:main']
     }
 )

@@ -221,16 +221,11 @@ class StupeflixTest:
 
         print "Test succeeded."
 
-# Test if the keys were set
-if key.stupeflixAccessKey == None:
-    print "ERROR : Please fill in key information in key.py"
-    exit(0)
 
-
-test = StupeflixTest()
-test.run()
-
-
-
-
-
+def main():
+    # Test if the keys were set
+    if key.stupeflixAccessKey == None:
+        print "ERROR : Please fill in key information in key.py"
+        exit(1)
+    test = StupeflixTest()
+    test.run()
