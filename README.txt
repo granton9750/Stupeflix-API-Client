@@ -67,7 +67,7 @@ See LICENSE.txt for more information on licensing issues
 
 Updates:
 
-The latest version of the Stupeflix Developer Kit is in our Subversion repository:
+The latest version of the Stupeflix Developer Kit is in our Git repository:
 http://code.stupeflix.com
 
 
