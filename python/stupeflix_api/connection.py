@@ -1,14 +1,20 @@
-import httplib2
 import urlparse
 import urllib
 import time
 import os.path
 import os
-import traceback
+import logging
+from stupeflix_api import httplib2
+
 
 httplib2.debuglevel = 0
+logger = logging.getLogger(__name__)
 
-class Connection:
+
+class Connection(object):
+
+    MAX_NETWORK_RETRY = 5
+
     def __init__(self, base_url, username=None, password=None, followRedirect = True, sendHTTP100Continue = True, userAgent = 'Basic Agent'):
         self.base_url = base_url
         self.username = username
@@ -26,7 +32,6 @@ class Connection:
         self.password = password
 
         self.debuglevel = 0
-        self.MAX_NETWORK_RETRY = 5
         self.sendHTTP100Continue = sendHTTP100Continue
         self.createHttp()
 
@@ -94,17 +99,16 @@ class Connection:
         uri = u"%s://%s%s" % (self.scheme, self.host, u'/'.join(request_path))
 
         for i in range(self.MAX_NETWORK_RETRY):
-            if i == (self.MAX_NETWORK_RETRY - 1):
+            try:
                 resp, content = self.h.request(uri, method.upper(), body=body, headers=headers, sendcallback = sendcallback)
                 break
-            else:
-                try:
-                    resp, content = self.h.request(uri, method.upper(), body=body, headers=headers, sendcallback = sendcallback)
-                    break
-                except Exception, e:
-                    print traceback.format_exc(e)
-                    print "RETRYING..."
+            except httplib2.HttpLib2Error:
+                if i < self.MAX_NETWORK_RETRY - 1:
+                    logger.info("request failed, retrying (%s/%s)", i + 1,
+                            self.MAX_NETWORK_RETRY, exc_info=True)
                     self.createHttp()
+                else:
+                    raise
         
         return {u'headers':resp, u'body':content}
 
@@ -113,16 +117,15 @@ class Connection:
             body = open(filename)            
 
         for i in range(self.MAX_NETWORK_RETRY):
-            if i == (self.MAX_NETWORK_RETRY - 1):
+            try:
                 resp, content = self.h.request(self.base_url, method.upper(), body=body, headers=headers, sendcallback = sendcallback )                
                 break
-            else:
-                try:
-                    resp, content = self.h.request(self.base_url, method.upper(), body=body, headers=headers, sendcallback = sendcallback )                
-                    break
-                except Exception, e:
-                    print traceback.format_exc()
-                    print "RETRYING RAW... ", (i + 1), e, str(e)
+            except httplib2.HttpLib2Error:
+                if i < self.MAX_NETWORK_RETRY - 1:
+                    logger.info("raw request failed, retrying (%s/%s)", i + 1,
+                            self.MAX_NETWORK_RETRY, exc_info=True)
                     self.createHttp()
+                else:
+                    raise
 
         return {u'headers':resp, u'body':content}
