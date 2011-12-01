@@ -102,7 +102,7 @@ class Connection(object):
             try:
                 resp, content = self.h.request(uri, method.upper(), body=body, headers=headers, sendcallback = sendcallback)
                 break
-            except httplib2.HttpLib2Error:
+            except:
                 if i < self.MAX_NETWORK_RETRY - 1:
                     logger.info("request failed, retrying (%s/%s)", i + 1,
                             self.MAX_NETWORK_RETRY, exc_info=True)
@@ -120,7 +120,7 @@ class Connection(object):
             try:
                 resp, content = self.h.request(self.base_url, method.upper(), body=body, headers=headers, sendcallback = sendcallback )                
                 break
-            except httplib2.HttpLib2Error:
+            except:
                 if i < self.MAX_NETWORK_RETRY - 1:
                     logger.info("raw request failed, retrying (%s/%s)", i + 1,
                             self.MAX_NETWORK_RETRY, exc_info=True)
