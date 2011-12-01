@@ -9,15 +9,17 @@ http://code.google.com/p/stupeflix/
 
 """
 
-import sys
 import os
 import hashlib
 import base64 
 import connection
 import time
 import hmac
-import urlparse
-import inspect
+import logging
+
+
+logger = logging.getLogger(__name__)
+
 
 class StupeflixBase(object): 
     def __init__(self, accessKey, privateKey, host = "http://services.stupeflix.com", service = 'stupeflix-1.0', debug = False):
@@ -194,7 +196,7 @@ class StupeflixBase(object):
             elif ret["status"] >= 300 and ret["status"] < 400:
                 url = ret["url"]            
 
-            print "RETRYING: %s" % i
+            logger.info("RETRYING: %s", i)
             time.sleep(sleepTime)
 
     def getContent_(self, url, filename = None, parameters = None, raiseExceptionOn404 = True):
