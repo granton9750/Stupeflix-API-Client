@@ -15,7 +15,16 @@ class ConnectionTests(unittest.TestCase):
     def tearDown(self):
         self.mox.UnsetStubs()
 
+    def disable_retries(self):
+        self.orig_max_retries = Connection.MAX_NETWORK_RETRY
+        Connection.MAX_NETWORK_RETRY = 1
+
+    def restore_retries(self):
+        Connection.MAX_NETWORK_RETRY = self.orig_max_retries 
+
     def test_request(self):
+        self.disable_retries()
+
         # Setup mocks
         http = self.mox.CreateMock(httplib2.Http)
         http.request(u'http://my.site.com', 'GET', body=None,
@@ -35,7 +44,11 @@ class ConnectionTests(unittest.TestCase):
         self.mox.VerifyAll()
         httplib2.Http = orig_http
 
+        self.restore_retries()
+
     def test_request_raw(self):
+        self.disable_retries()
+
         # Setup mocks
         http = self.mox.CreateMock(httplib2.Http)
         http.request('http://my.site.com/', 'GET', body=None, headers={},
@@ -53,6 +66,8 @@ class ConnectionTests(unittest.TestCase):
         # Verify mocks
         self.mox.VerifyAll()
         httplib2.Http = orig_http
+
+        self.restore_retries()
 
     def test_request_errors(self):
         # Setup mocks
