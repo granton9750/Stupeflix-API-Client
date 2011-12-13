@@ -757,8 +757,7 @@ final class StupeflixConnection {
         {
             // Something went bad ... build response error object
             $this->response->error = array('code' => curl_errno($curl),
-                                           'message' => curl_error($curl),
-                                           'resource' => $this->resource);
+                                           'message' => curl_error($curl));
 
             @curl_close($curl);
         }
