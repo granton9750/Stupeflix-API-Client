@@ -323,3 +323,37 @@ class TransferChunkedEncoder:
             self.oldBuffer = self.oldBuffer[size:]
         self.totalOutputLength += len(ret)
         return ret
+
+class UnsupportedException(Exception):
+    pass
+
+class DataGenWrapper:
+    def __init__(self, generator, length, buffer_size = 8192):
+        self.generator = generator
+        self.length = length
+        self.buffer_size = buffer_size
+        self.lastSlice = ""
+        self.pos = 0
+
+    def __len__(self):
+        return self.length
+
+    def __getitem__(self, index):
+        if isinstance(index, slice):
+            start, stop, step = index.start, index.stop, index.step
+            if (step != 1 and step != None) or stop < 0 or (start != None and start < 0):
+                raise UnsupportedException("start=%s, stop=%s, step=%s" % (start, stop, step))
+            if start < self.pos:
+                data = self.lastSlice[start - self.pos:]
+                self.lastSlice = ""
+                return data
+            elif start == self.pos:
+                self.lastSlice = self.generator.next()
+                self.pos += len(self.lastSlice)
+                return self.lastSlice
+            else:
+                raise UnsupportedException                
+        else:
+            raise UnsupportedException
+        
+        

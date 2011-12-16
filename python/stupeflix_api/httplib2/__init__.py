@@ -911,12 +911,12 @@ class HTTPConnectionWithTimeout(HTTPConnectionWithProgress):
         if not self.sock:
             raise socket.error, msg
 
-class HTTPSConnectionWithTimeout(HTTPConnectionWithProgress):
+class HTTPSConnectionWithTimeout(HTTPConnectionWithProgress, httplib.HTTPSConnection):
     "This class allows communication via SSL."
 
     def __init__(self, host, port=None, key_file=None, cert_file=None,
                  strict=None, timeout=None, proxy_info=None):
-        self.timeout = timeout
+        self.timeout_ = timeout or 60.0
         self.proxy_info = proxy_info
         httplib.HTTPSConnection.__init__(self, host, port=port, key_file=key_file,
                 cert_file=cert_file, strict=strict)
@@ -931,8 +931,8 @@ class HTTPSConnectionWithTimeout(HTTPConnectionWithProgress):
             sock.setproxy(*self.proxy_info.astuple())
         else:
             sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        if self.timeout is not None:
-            sock.settimeout(self.timeout)
+        if self.timeout_ is not None:
+            sock.settimeout(self.timeout_)
         sock.connect((self.host, self.port))
         ssl = socket.ssl(sock, self.key_file, self.cert_file)
         self.sock = httplib.FakeSocket(sock, ssl)
