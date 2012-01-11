@@ -20,12 +20,16 @@ class Stupeflix extends StupeflixBase
     // @param secretKey : User secret Key
     // @param service   : Name of the service
     // @param debug     : Debug mode or not
-    public function __construct($accessKey, $secretKey, $host = "http://services.stupeflix.com", $service = 'stupeflix-1.0', $debug = false)
+    public function __construct($accessKey, $secretKey, $host, $service = 'stupeflix-1.0', $debug = false)
     {
+        if (!$host) {
+            $host = "http://services.stupeflix.com";
+        }
+
         if ($host[strlen($host) - 1] == "/") {
             $host = substr($host, 0, strlen($host) - 1);
         }
-                  
+
         $this->accessKey = $accessKey;
         $this->secretKey = $secretKey;
         $this->base_url  = $host . '/' . $service;
