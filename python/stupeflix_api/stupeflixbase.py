@@ -63,7 +63,7 @@ class StupeflixBase(object):
 
     def strToSign(self, method, resource, md5, mime, datestr, parameters):
         paramStr = self.paramString(parameters)
-        stringToSign  = "%s\n%s\n%s\n%s\n%s\n%s" % (method, md5, mime, datestr, '/' + self.service + resource, paramStr)        
+        stringToSign  = "%s\n%s\n%s\n%s\n%s\n%s" % (method, md5, mime, datestr, '/' + self.service + resource, paramStr)
         return stringToSign
         
     def sign(self, strToSign, secretKey):               
