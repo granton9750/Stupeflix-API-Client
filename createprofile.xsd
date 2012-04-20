@@ -34,12 +34,16 @@
         <xs:element name="httpPUT" type="httpPutType"/>
         <!-- Upload to youtube -->
         <xs:element name="youtube" type="youtubeType"/>        
+        <!-- Upload to brightcove -->
+        <xs:element name="brightcove" type="brightcoveType"/>
         <!-- Upload to facebook -->
         <xs:element name="facebook" type="facebookType"/>        
         <!-- Upload to dailymotion -->
         <xs:element name="dailymotion" type="dailymotionType"/>        
         <!-- Upload to a s3 bucket -->
         <xs:element name="s3" type="s3Type"/>        
+        <!-- Upload to a ftp server -->
+        <xs:element name="ftp" type="ftpType"/>
       </xs:choice>
     </xs:sequence>
     <!-- Main parameter:kind of profile to use, which then fix the dimensions, bitrate, codec etc of the video -->
@@ -49,35 +53,38 @@
   <xs:complexType name="metaType">
     <xs:all minOccurs="0">
       <!-- meta used for uploads information, and send by notification calls too -->
-      <xs:element name="title"/>
-      <xs:element name="tags"/>
-      <xs:element name="description"/>
-      <xs:element name="author"/>
-      <xs:element name="date"/>
-      <xs:element name="location"/>
-      <xs:element name="license"/>
-      <xs:element name="copyright"/>
-      <xs:element name="acl" type="aclType"/>
+      <xs:element name="title" minOccurs="0"/>
+      <xs:element name="tags" minOccurs="0"/>
+      <xs:element name="description" minOccurs="0"/>
+      <xs:element name="author" minOccurs="0"/>
+      <xs:element name="date" minOccurs="0"/>
+      <xs:element name="location" minOccurs="0"/>
+      <xs:element name="license" minOccurs="0"/>
+      <xs:element name="copyright" minOccurs="0"/>
+      <xs:element name="acl" type="aclType" minOccurs="0"/>
 
-      <xs:element name="channels"/>
-      <xs:element name="group"/>
-      <xs:element name="groups"/>
-      <xs:element name="lang"/>
-      <xs:element name="country"/>
-      <xs:element name="city"/>
+      <xs:element name="channels" minOccurs="0"/>
+      <xs:element name="group" minOccurs="0"/>
+      <xs:element name="groups" minOccurs="0"/>
+      <xs:element name="lang" minOccurs="0"/>
+      <xs:element name="country" minOccurs="0"/>
+      <xs:element name="city" minOccurs="0"/>
 
 
       <!-- Stupeflix video generation directive -->
+      <xs:element name="framerate" type="xs:float" minOccurs="0"/> <!-- between 0 and 100 frames per second -->
       <!-- Generate preview -->
-      <xs:element name="preview" type="previewType"/>
+      <xs:element name="preview" type="booleanType" minOccurs="0"/>
+      <!-- Generate or just upload existing video -->
+      <xs:element name="generate" type="booleanType" minOccurs="0"/>
       <!-- Generate the thumbnail at the give time -->
-      <xs:element name="thumbnailTime" type="xs:float"/>
+      <xs:element name="thumbnailTime" type="xs:float" minOccurs="0"/>
 
     </xs:all>
   </xs:complexType>
 
-  <!-- Preview flag type -->
-  <xs:simpleType name="previewType">
+  <!-- Boolean flag type -->
+  <xs:simpleType name="booleanType">
     <xs:restriction base="xs:string">
       <xs:pattern value="true|false"/>
     </xs:restriction>
@@ -94,14 +101,14 @@
   <!-- Specify an upload to the Stupeflix temporary storage -->
   <xs:complexType name="stupeflixStoreType">   
     <xs:all minOccurs="0">
-      <xs:element name="meta"/>
+      <xs:element name="meta" type="metaType"/>
     </xs:all>
   </xs:complexType>
 
   <!-- Specify an HTTP POST based upload-->
   <xs:complexType name="httpPostType">   
     <xs:all minOccurs="0">
-      <xs:element name="meta"/>
+      <xs:element name="meta" type="metaType"/>
     </xs:all>
     <xs:attribute name="url" type="xs:anyURI" use="required"/>
   </xs:complexType>
@@ -109,7 +116,7 @@
   <!-- Specify an HTTP PUT based upload-->
   <xs:complexType name="httpPutType">   
     <xs:all minOccurs="0">
-      <xs:element name="meta"/>
+      <xs:element name="meta" type="metaType"/>
     </xs:all>
     <xs:attribute name="url" type="xs:anyURI" use="required"/>
   </xs:complexType>
@@ -117,19 +124,32 @@
   <!-- Specify an upload to youtube -->
   <xs:complexType name="youtubeType">
     <xs:all minOccurs="0">
-      <xs:element name="meta"/>
+      <xs:element name="meta" type="metaType"/>
     </xs:all>    
     <xs:attribute name="login" type="xs:string"/>
     <xs:attribute name="password" type="xs:string"/>
     <xs:attribute name="developerkey" type="xs:string"/>
     <xs:attribute name="source" type="xs:string"/>    
     <xs:attribute name="sid" type="xs:string"/>
+    <xs:attribute name="oauthconsumerkey" type="xs:string"/>
+    <xs:attribute name="oauthconsumersecret" type="xs:string"/>
+    <xs:attribute name="oauthtoken" type="xs:string"/>
+    <xs:attribute name="oauthtokensecret" type="xs:string"/>
+  </xs:complexType>
+
+  <!-- Specify an upload to BrightCove -->
+  <xs:complexType name="brightcoveType">
+    <xs:all minOccurs="0">
+      <xs:element name="meta" type="metaType"/>
+    </xs:all>
+    <xs:attribute name="sid" type="xs:string"/> <!-- This is a write token from BrightCove -->
+    <xs:attribute name="reference_id" type="xs:string"/>  <!-- This is the reference_id -->
   </xs:complexType>
 
   <!-- Specify an upload to dailymotion -->
   <xs:complexType name="dailymotionType">
     <xs:all minOccurs="0">
-      <xs:element name="meta"/>
+      <xs:element name="meta" type="metaType"/>
     </xs:all>
     <!-- you must specify a login and password  OR a valid session id -->
     <xs:attribute name="login" type="xs:string"/>
@@ -140,18 +160,17 @@
   <!-- Specify an upload to facebook -->
   <xs:complexType name="facebookType">
     <xs:all minOccurs="0">
-      <xs:element name="meta"/>
+      <xs:element name="meta" type="metaType"/>
     </xs:all>
     <xs:attribute name="apikey" type="xs:string" use="required"/> <!-- Your Facebook API key -->
     <xs:attribute name="secret" type="xs:string" use="required"/> <!-- This is your app secret (if your app is a Web App) or a session secret (if your app is a Desktop App). -->
     <xs:attribute name="sid" type="xs:string" use="required"/> <!-- User session -->
   </xs:complexType>
 
-
   <!-- Specify an upload to an Amazon S3 bucket. -->
   <xs:complexType name="s3Type">
     <xs:all minOccurs="0">
-      <xs:element name="meta"/>
+      <xs:element name="meta" type="metaType"/>
     </xs:all>
     <!-- Name of the Amazon S3 bucket to be written to. -->
     <!-- The name of the uploaded files will be http://BUCKET.s3.amazonaws.com/RESOURCEPREFIX/ -->
@@ -163,11 +182,26 @@
     <xs:attribute name="secretkey" type="xs:string" />
   </xs:complexType>
 
+  <!-- Specify an upload to ftp -->
+  <xs:complexType name="ftpType">
+    <xs:all minOccurs="0">
+      <xs:element name="meta" type="metaType"/>
+    </xs:all>
+    <!-- you must specify a login and password or anonymous will be used -->
+    <xs:attribute name="server" type="xs:string" use="required"/>
+    <xs:attribute name="login" type="xs:string"/>
+    <xs:attribute name="password" type="xs:string"/>
+    <xs:attribute name="directory" type="xs:string" use="required"/>
+  </xs:complexType>
+
   <xs:simpleType name="profileNameType">
     <xs:restriction base="xs:string">
       
       <xs:enumeration value="iphone"/>
+      <xs:enumeration value="iphone-24p"/>
       <xs:enumeration value="iphone-16-9"/>
+      <xs:enumeration value="iphone-16-9-slow"/>
+      <xs:enumeration value="iphone-16-9-12fp"/>
       <xs:enumeration value="iphone-flv"/>
       <xs:enumeration value="iphone-slow"/>
       <xs:enumeration value="youtube"/>
@@ -176,6 +210,7 @@
       <xs:enumeration value="youtube-slow-flv"/>
       <xs:enumeration value="quicktime"/>
       <xs:enumeration value="quicktime-small"/>
+      <xs:enumeration value="square-400"/>
       <xs:enumeration value="flash"/>
       <xs:enumeration value="flash-med-16-9"/>
       <xs:enumeration value="flash-hq"/>
@@ -185,6 +220,16 @@
       <xs:enumeration value="wmv1"/>
       <xs:enumeration value="wmv2"/>
 
+      <xs:enumeration value="720p"/>
+      <xs:enumeration value="720p-24-fps"/>
+      <xs:enumeration value="480p"/>
+      <xs:enumeration value="480p-24-fps"/>
+      <xs:enumeration value="360p"/>
+      <xs:enumeration value="360p-24-fps"/>
+      <xs:enumeration value="360p-12-fps"/>
+      <xs:enumeration value="360p-23-976-fps"/>
+      <xs:enumeration value="240p"/>
+      <xs:enumeration value="240p-24-fps"/>
     </xs:restriction>
   </xs:simpleType>
 
