@@ -305,9 +305,15 @@ class StupeflixNotify < StupeflixXMLNode
   end
 end
 
+class StupeflixHttpHeader < StupeflixXMLNode
+  def initialize(key, value)
+    super("header", {"key" => key, "value" => value})
+  end
+end
+
 class StupeflixUpload < StupeflixXMLNode
-  def initialize( name, parameters, meta = nil, notify = nil)
-    children = metaChildrenAppend(meta)
+  def initialize( name, parameters, meta = nil, notify = nil, children = nil)
+    children = metaChildrenAppend(meta, notify, children)
     super(name, parameters, children)    
   end
 end
@@ -319,8 +325,8 @@ class StupeflixHttpPOSTUpload < StupeflixUpload
 end 
 
 class StupeflixHttpPUTUpload < StupeflixUpload
-  def initialize( url, meta = nil, notify = nil)
-    super("httpPUT", {"url" => url}, meta, notify)        
+  def initialize( url, meta = nil, notify = nil, headers = nil)
+    super("httpPUT", {"url" => url}, meta, notify, headers)
   end      
 end 
 

@@ -272,10 +272,14 @@ class StupeflixProfile(StupeflixXMLNode):
 class StupeflixNotify(StupeflixXMLNode):
     def __init__(self, url, statusRegexp):
         super(StupeflixNotify, self).__init__("notify", {"url":url, "statusRegexp":statusRegexp})
+
+class StupeflixHttpHeader(StupeflixXMLNode):
+    def __init__(self, key, value):
+        super(StupeflixHttpHeader, self).__init__("header", {"key":key, "value":value})
             
 class StupeflixUpload(StupeflixXMLNode):
-    def __init__(self, name, parameters, meta = None, notify = None):
-        children = self.metaChildrenAppend(meta)
+    def __init__(self, name, parameters, meta = None, notify = None, children = None):
+        children = self.metaChildrenAppend(meta, notify, children)
         super(StupeflixUpload, self).__init__(name, parameters, children)           
         
 class StupeflixHttpPOSTUpload(StupeflixUpload):
@@ -283,8 +287,8 @@ class StupeflixHttpPOSTUpload(StupeflixUpload):
         super(StupeflixHttpPOSTUpload, self).__init__("httpPOST", {"url":url}, meta, notify)
 
 class StupeflixHttpPUTUpload(StupeflixUpload):
-    def __init__(self, url, meta = None, notify = None):
-        super(StupeflixHttpPUTUpload, self).__init__("httpPUT", {"url":url}, meta, notify)
+    def __init__(self, url, meta = None, notify = None, headers = None):
+        super(StupeflixHttpPUTUpload, self).__init__("httpPUT", {"url":url}, meta, notify, headers)
         
 class StupeflixYoutubeUpload(StupeflixUpload):
     def __init__(self, login, password, meta = None, notify = None):
