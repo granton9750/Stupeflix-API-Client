@@ -113,11 +113,20 @@
     <xs:attribute name="url" type="xs:anyURI" use="required"/>
   </xs:complexType>
 
+  <!-- Header type, used by http put upload -->
+  <xs:complexType name="headerType">
+    <xs:attribute name="key" use="required"/>
+    <xs:attribute name="value" use="required"/>
+  </xs:complexType>
+
   <!-- Specify an HTTP PUT based upload-->
   <xs:complexType name="httpPutType">   
-    <xs:all minOccurs="0">
-      <xs:element name="meta" type="metaType"/>
-    </xs:all>
+    <xs:sequence>
+      <xs:choice minOccurs="0" maxOccurs="unbounded" >
+        <xs:element name="meta" type="metaType"/>
+        <xs:element name="header" type="headerType" />
+      </xs:choice>
+    </xs:sequence>
     <xs:attribute name="url" type="xs:anyURI" use="required"/>
   </xs:complexType>
 

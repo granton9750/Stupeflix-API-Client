@@ -952,9 +952,9 @@ class StupeflixNotify extends StupeflixXMLNode {
 
 // Base class for upload
 class StupeflixUpload extends StupeflixXMLNode {
-    public function __construct($name, $parameters, $meta = null)
+    public function __construct($name, $parameters, $meta = null, $children = null)
     {
-        $children = $this->metaChildrenAppend($meta, null, null);
+        $children = $this->metaChildrenAppend($meta, null, $children);
         parent::__construct($name, $parameters, $children, null);
     }   
 }
@@ -968,12 +968,22 @@ class StupeflixHttpPOSTUpload extends StupeflixUpload {
     }   
 }
 
+class StupeflixHttpHeader extends StupeflixXMLNode {
+    // Create the upload object
+    public function __construct($key, $value)
+    {
+        $attributes = array("key"=>$key, "value"=>$value);
+        parent::__construct("header", $attributes, null);
+    }
+}
+
+
 // StupeflixHttpPUTUpload : upload the video using a PUT to the given url, using multipart/form-data 
 class StupeflixHttpPUTUpload extends StupeflixUpload {
     // Create the upload object
-    public function __construct($url, $meta = null)
+    public function __construct($url, $meta = null, $headers = null)
     {
-        parent::__construct("httpPUT", array("url"=>$url), $meta);
+        parent::__construct("httpPUT", array("url"=>$url), $meta, $headers);
     }   
 }
 
