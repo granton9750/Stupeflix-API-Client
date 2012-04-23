@@ -1175,7 +1175,7 @@ a string that contains the response entity body.
             uri = iri2uri(uri)
 
             (scheme, authority, request_uri, defrag_uri) = urlnorm(uri)
-            
+
             conn_key = scheme+":"+authority
             if conn_key in self.connections:
                 conn = self.connections[conn_key]
@@ -1277,7 +1277,7 @@ a string that contains the response entity body.
                 else:
                     self.cache.delete(cachekey)
                     content = new_content 
-            else: 
+            else:
                 (response, content) = self._request(conn, authority, uri, request_uri, method, body, headers, redirections, cachekey, sendcallback)
         except Exception, e:
             if self.force_exception_to_status_code:
