@@ -121,11 +121,11 @@ class StupeflixBase
 
   def error( message)
     logdebug(message)
-    raise Exception, message
+    raise StandardError, message
   end
 
   def answer_error( answer, message)
-    raise Exception, sprintf( "%s\n%s", message,  answer['body'])
+    raise StandardError, sprintf( "%s\n%s", message,  answer['body'])
   end
 
   # sendcallback is an object with 

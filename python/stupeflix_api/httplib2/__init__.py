@@ -934,8 +934,13 @@ class HTTPSConnectionWithTimeout(HTTPConnectionWithProgress, httplib.HTTPSConnec
         if self.timeout_ is not None:
             sock.settimeout(self.timeout_)
         sock.connect((self.host, self.port))
-        ssl = socket.ssl(sock, self.key_file, self.cert_file)
-        self.sock = httplib.FakeSocket(sock, ssl)
+
+        import ssl
+        self.sock = ssl.wrap_socket(sock, ssl_version=ssl.PROTOCOL_TLSv1)
+
+        #ssl = socket.ssl(sock, self.key_file, self.cert_file)
+
+        #self.sock = httplib.FakeSocket(sock, ssl)
 
 
 

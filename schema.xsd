@@ -10,6 +10,7 @@
   <xs:element name="movie">
     <xs:complexType>
       <xs:all>
+	<xs:element name="head" type="headerType" minOccurs="0" maxOccurs="1"/>	
 	<xs:element name="body" type="sequence" minOccurs="1" maxOccurs="1"/>	
       </xs:all>
       <xs:attribute name="service" use="required" type="serviceType"/>
@@ -22,6 +23,20 @@
       <xs:enumeration value="craftsman-1.0"/>
     </xs:restriction>
   </xs:simpleType>
+
+<!--
+  ########################################################
+  #
+  # Header
+  #
+  #######################################################-->
+  <xs:complexType name="headerType">
+    <xs:sequence>
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+        <xs:element name="filtercode" type="filtercodeType"/>
+      </xs:choice>
+    </xs:sequence>
+  </xs:complexType>
 
 <!-- 
   ##################################################       
@@ -141,6 +156,7 @@
     <xs:attribute name="name" type="xs:string"/>
     <xs:attribute name="screenWidth" type="xs:float"/>
     <xs:attribute name="screenHeight" type="xs:float"/>
+    <xs:attribute name="static" type="bool"/>
   </xs:complexType>
 
   <!-- Camera Type -->
@@ -430,6 +446,7 @@
     </xs:sequence>
     <xs:attribute name="name" type="xs:string"/>
     <xs:attribute name="filename" />
+    <xs:attribute name="alt_filename" />
     <xs:attribute name="color" type="colorType"/>
     <xs:attribute name="width" type="xs:nonNegativeInteger"/>
     <xs:attribute name="height" type="xs:nonNegativeInteger"/>
@@ -502,7 +519,6 @@
   <xs:simpleType name="voiceType">
     <xs:restriction base="xs:string">
       <xs:pattern value="neospeech:.*"/>
-      <xs:pattern value="acapela:.*"/>
       <!--  
       <xs:enumeration value="neospeech:paul"/> 
       <xs:enumeration value="neospeech:kate"/> 
@@ -585,12 +601,15 @@
         <xs:element name="filter" type="filter" />
         <xs:element name="animator" type="animator" />
         <xs:group ref="atoms"/>
+        <xs:element name="filtercode" type="filtercodeType" />
       </xs:choice>
     </xs:sequence>
     
     <xs:attributeGroup ref="timeAttributes"/>
     <xs:attribute name="type" type="filterType" use="required"/>
     <xs:attribute name="color" type="colorType" />
+    <xs:attribute name="color0" type="colorType" />
+    <xs:attribute name="color1" type="colorType" />
     <xs:attribute name="whiteColor" type="colorType" />
     <xs:attribute name="blackColor" type="colorType" />
     <xs:attribute name="mediumColor" type="colorType" />
@@ -601,6 +620,11 @@
     <xs:attribute name="threshold" type="xs:float"/>
     <xs:attribute name="originalBlend" type="xs:float"/>
     <xs:attribute name="diameter" type="xs:float"/>
+    <xs:attribute name="diameterX" type="xs:float"/>
+    <xs:attribute name="diameterY" type="xs:float"/>
+    <xs:attribute name="bias" type="xs:float"/>
+    <xs:attribute name="biasX" type="xs:float"/>
+    <xs:attribute name="biasY" type="xs:float"/>
     <xs:attribute name="margin" type="xs:float"/>
     <xs:attribute name="width" type="xs:float"/>
     <xs:attribute name="colorWidth" type="xs:float"/>
@@ -614,6 +638,8 @@
     <xs:attribute name="alphaEnd" type="xs:float"/>
     <xs:attribute name="direction" type="directionType"/>
     <xs:attribute name="angle" type="xs:float"/>
+    <xs:attribute name="point0" type="floatCouple"/>
+    <xs:attribute name="point1" type="floatCouple"/>
     <xs:attribute name="center" type="floatCouple"/>
     <xs:attribute name="centerStart" type="floatCouple"/>
     <xs:attribute name="centerEnd" type="floatCouple"/>
@@ -652,6 +678,18 @@
     <xs:attribute name="depthEnable" type="bool"/>
   </xs:complexType>
 
+  <xs:complexType name="filtercodeType" mixed="true">
+    <xs:attributeGroup ref="timeAttributes"/>
+    <xs:attribute name="name" type="xs:string"/>
+  </xs:complexType>
+
+  <xs:simpleType name="shaderLanguageType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="glsl"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+
   <xs:simpleType name="strokePositionType">
     <xs:restriction base="xs:string">
       <xs:enumeration value="outside"/>
@@ -662,6 +700,7 @@
 
   <xs:simpleType name="filterType">
     <xs:restriction base="xs:string">
+      <xs:enumeration value="custom"/>
       <xs:enumeration value="colormap"/>
       <xs:enumeration value="tint"/>
       <xs:enumeration value="threetint"/>
@@ -670,6 +709,7 @@
       <xs:enumeration value="displacement"/>
       <xs:enumeration value="distancemap"/>
       <xs:enumeration value="distancecolor"/>
+      <xs:enumeration value="motionInterpolate"/>
       <xs:enumeration value="hblur"/>
       <xs:enumeration value="vblur"/>
       <xs:enumeration value="blur"/>
@@ -708,6 +748,8 @@
       <xs:enumeration value="dof"/>
       <xs:enumeration value="antialias"/>
       <xs:enumeration value="quad"/>
+      <xs:enumeration value="gradient"/>
+      <xs:enumeration value="radialGradient"/>
     </xs:restriction>
   </xs:simpleType>
 
