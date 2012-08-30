@@ -95,6 +95,7 @@
     <xs:restriction base="xs:string">
       <xs:enumeration value="public"/>
       <xs:enumeration value="private"/>
+      <xs:enumeration value="unlisted"/>
     </xs:restriction>
   </xs:simpleType>
 
@@ -238,6 +239,7 @@
       <xs:enumeration value="720p-12-fps"/>
       <xs:enumeration value="480p"/>
       <xs:enumeration value="480p-24-fps"/>
+      <xs:enumeration value="480p-4-3-29-97-fps"/>
       <xs:enumeration value="360p"/>
       <xs:enumeration value="360p-29-97-fps"/>
       <xs:enumeration value="360p-24-fps"/>

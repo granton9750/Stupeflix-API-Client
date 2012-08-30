@@ -90,7 +90,7 @@ class StupeflixBase(object):
             md5.update(body)
         else:
             chunksize=1024
-            f = open(filename, 'r')
+            f = open(filename, 'rb')
         
             while True:
                 chunk = f.read(chunksize)
@@ -102,7 +102,7 @@ class StupeflixBase(object):
         return (digest, md5.hexdigest(), base64.b64encode(digest)) 
 
     def isZip(self, filename):
-        f = open(filename, 'r')
+        f = open(filename, 'rb')
         header = f.read(4)
         return header == r'PK'+chr(3)+chr(4)
 
@@ -238,7 +238,7 @@ class StupeflixBase(object):
             self.error("Non matching body length and content-length")
 
         if filename != None:
-            f = open(filename, 'w')
+            f = open(filename, 'wb')
             f.write(body)            
             f.close()
 

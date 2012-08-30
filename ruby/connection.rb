@@ -107,7 +107,7 @@ class Connection
           end
         end        
         break
-      rescue StandardError => e
+      rescue Exception => e
         if i == (@MAX_NETWORK_RETRY - 1)
           raise
         end

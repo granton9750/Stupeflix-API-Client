@@ -59,7 +59,7 @@ class StupeflixClient(StupeflixBase):
             if body:                
                 self.batchData += body
             else:
-                self.batchData += open(filename).read()
+                self.batchData += open(filename, 'rb').read()
         else:
             return self.sendContent("PUT", url, contentType, filename, body)
 
