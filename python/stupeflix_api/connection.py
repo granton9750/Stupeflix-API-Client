@@ -77,7 +77,7 @@ class Connection(object):
         # TEMPORARY : add support for streaming
         if method != "get":
             if not body and filename:
-                body = open(filename, 'r')
+                body = open(filename, 'rb')
                 if not "Content-Length" in headers:
                     headers["Content-Length"] = str(os.stat(filename).st_size)
 
@@ -114,7 +114,7 @@ class Connection(object):
 
     def request_raw(self, method = "get", args = None, body = None, filename=None, headers={}, sendcallback = None):
         if body == None and filename != None:
-            body = open(filename)            
+            body = open(filename, 'rb')
 
         for i in range(self.MAX_NETWORK_RETRY):
             try:

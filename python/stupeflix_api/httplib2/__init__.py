@@ -911,12 +911,12 @@ class HTTPConnectionWithTimeout(HTTPConnectionWithProgress):
         if not self.sock:
             raise socket.error, msg
 
-class HTTPSConnectionWithTimeout(HTTPConnectionWithProgress):
+class HTTPSConnectionWithTimeout(HTTPConnectionWithProgress, httplib.HTTPSConnection):
     "This class allows communication via SSL."
 
     def __init__(self, host, port=None, key_file=None, cert_file=None,
                  strict=None, timeout=None, proxy_info=None):
-        self.timeout = timeout
+        self.timeout_ = timeout or 60.0
         self.proxy_info = proxy_info
         httplib.HTTPSConnection.__init__(self, host, port=port, key_file=key_file,
                 cert_file=cert_file, strict=strict)
@@ -931,11 +931,16 @@ class HTTPSConnectionWithTimeout(HTTPConnectionWithProgress):
             sock.setproxy(*self.proxy_info.astuple())
         else:
             sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        if self.timeout is not None:
-            sock.settimeout(self.timeout)
+        if self.timeout_ is not None:
+            sock.settimeout(self.timeout_)
         sock.connect((self.host, self.port))
-        ssl = socket.ssl(sock, self.key_file, self.cert_file)
-        self.sock = httplib.FakeSocket(sock, ssl)
+
+        import ssl
+        self.sock = ssl.wrap_socket(sock, ssl_version=ssl.PROTOCOL_TLSv1)
+
+        #ssl = socket.ssl(sock, self.key_file, self.cert_file)
+
+        #self.sock = httplib.FakeSocket(sock, ssl)
 
 
 
@@ -1175,7 +1180,7 @@ a string that contains the response entity body.
             uri = iri2uri(uri)
 
             (scheme, authority, request_uri, defrag_uri) = urlnorm(uri)
-            
+
             conn_key = scheme+":"+authority
             if conn_key in self.connections:
                 conn = self.connections[conn_key]
@@ -1277,7 +1282,7 @@ a string that contains the response entity body.
                 else:
                     self.cache.delete(cachekey)
                     content = new_content 
-            else: 
+            else:
                 (response, content) = self._request(conn, authority, uri, request_uri, method, body, headers, redirections, cachekey, sendcallback)
         except Exception, e:
             if self.force_exception_to_status_code:

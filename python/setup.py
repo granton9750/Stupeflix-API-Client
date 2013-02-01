@@ -7,7 +7,7 @@ README = open(os.path.join(here, 'README.rst')).read()
 NEWS = open(os.path.join(here, 'NEWS.txt')).read()
 
 
-version = '0.2.1'
+version = '0.2.2'
 
 install_requires = [
     "mox",
@@ -26,7 +26,7 @@ setup(name='stupeflix_api',
     keywords='',
     author='Francois Lagunas',
     author_email='francois@stupeflix.com',
-    url='https://github.com/madlag/Stupeflix-API-Client',
+    url='https://github.com/stupeflix/Stupeflix-API-Client',
     license='',
     packages=find_packages(),
     include_package_data=True,

@@ -20,12 +20,16 @@ class Stupeflix extends StupeflixBase
     // @param secretKey : User secret Key
     // @param service   : Name of the service
     // @param debug     : Debug mode or not
-    public function __construct($accessKey, $secretKey, $host = "http://services.stupeflix.com", $service = 'stupeflix-1.0', $debug = false)
+    public function __construct($accessKey, $secretKey, $host, $service = 'stupeflix-1.0', $debug = false)
     {
+        if (!$host) {
+            $host = "http://services.stupeflix.com";
+        }
+
         if ($host[strlen($host) - 1] == "/") {
             $host = substr($host, 0, strlen($host) - 1);
         }
-                  
+
         $this->accessKey = $accessKey;
         $this->secretKey = $secretKey;
         $this->base_url  = $host . '/' . $service;
@@ -757,8 +761,7 @@ final class StupeflixConnection {
         {
             // Something went bad ... build response error object
             $this->response->error = array('code' => curl_errno($curl),
-                                           'message' => curl_error($curl),
-                                           'resource' => $this->resource);
+                                           'message' => curl_error($curl));
 
             @curl_close($curl);
         }
@@ -949,9 +952,9 @@ class StupeflixNotify extends StupeflixXMLNode {
 
 // Base class for upload
 class StupeflixUpload extends StupeflixXMLNode {
-    public function __construct($name, $parameters, $meta = null)
+    public function __construct($name, $parameters, $meta = null, $children = null)
     {
-        $children = $this->metaChildrenAppend($meta, null, null);
+        $children = $this->metaChildrenAppend($meta, null, $children);
         parent::__construct($name, $parameters, $children, null);
     }   
 }
@@ -965,12 +968,22 @@ class StupeflixHttpPOSTUpload extends StupeflixUpload {
     }   
 }
 
+class StupeflixHttpHeader extends StupeflixXMLNode {
+    // Create the upload object
+    public function __construct($key, $value)
+    {
+        $attributes = array("key"=>$key, "value"=>$value);
+        parent::__construct("header", $attributes, null);
+    }
+}
+
+
 // StupeflixHttpPUTUpload : upload the video using a PUT to the given url, using multipart/form-data 
 class StupeflixHttpPUTUpload extends StupeflixUpload {
     // Create the upload object
-    public function __construct($url, $meta = null)
+    public function __construct($url, $meta = null, $headers = null)
     {
-        parent::__construct("httpPUT", array("url"=>$url), $meta);
+        parent::__construct("httpPUT", array("url"=>$url), $meta, $headers);
     }   
 }
 
