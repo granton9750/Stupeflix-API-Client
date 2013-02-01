@@ -15,10 +15,11 @@ class Connection(object):
 
     MAX_NETWORK_RETRY = 5
 
-    def __init__(self, base_url, username=None, password=None, followRedirect = True, sendHTTP100Continue = True, userAgent = 'Basic Agent'):
+    def __init__(self, base_url, username=None, password=None, followRedirect = True, sendHTTP100Continue = True, userAgent = 'Basic Agent', timeout = None):
         self.base_url = base_url
         self.username = username
         self.userAgent = userAgent
+        self.timeout = timeout
         self.url = urlparse.urlparse(base_url)
         
         (scheme, netloc, path, query, fragment) = urlparse.urlsplit(base_url)
@@ -36,7 +37,7 @@ class Connection(object):
         self.createHttp()
 
     def createHttp(self):
-        self.h = httplib2.Http(cache = None)
+        self.h = httplib2.Http(cache = None, timeout = self.timeout)
         self.h.follow_redirects = self.followRedirect
         self.h.follow_all_redirects = self.followRedirect
         self.h.sendHTTP100Continue = self.sendHTTP100Continue
@@ -66,7 +67,6 @@ class Connection(object):
             print message, " " , time.asctime(), " " , request_uri, "\n"
 
     def request(self, resource, method = "get", args = None, body = None, filename=None, headers={}, sendcallback = None):        
-        params = None
         path = resource
 
         if headers == None:

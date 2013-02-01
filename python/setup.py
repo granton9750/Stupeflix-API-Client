@@ -1,19 +1,13 @@
 #!/usr/bin/env python
 from setuptools import setup, find_packages
-import sys, os
+import os
 
 here = os.path.abspath(os.path.dirname(__file__))
 README = open(os.path.join(here, 'README.rst')).read()
 NEWS = open(os.path.join(here, 'NEWS.txt')).read()
 
 
-version = '0.2.2'
-
-install_requires = [
-    "mox",
-    "mock",
-    "nose",
-]
+version = '0.3.0'
 
 
 setup(name='stupeflix_api',
@@ -31,7 +25,6 @@ setup(name='stupeflix_api',
     packages=find_packages(),
     include_package_data=True,
     zip_safe=False,
-    install_requires=install_requires,
     entry_points={
         'console_scripts':
             ['stupeflix-api=stupeflix_api.commandline:main']
