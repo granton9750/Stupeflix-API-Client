@@ -496,6 +496,10 @@
     <xs:attribute name="margin-start" type="xs:float"/>
     <xs:attribute name="speed" type="xs:float"/>
     <xs:attribute name="audiospeed" type="xs:float"/>
+    <xs:attribute name="duck-others" type="duckOthersType"/>
+    <xs:attribute name="duck-threshold" type="duckThresholdType"/>
+    <xs:attribute name="duck-margin" type="durationType"/> <!-- default is 0.5s -->
+    <xs:attribute name="duck-fade" type="durationType"/> <!-- default is 1.0s -->
   </xs:complexType>
 
 <!-- 
@@ -514,6 +518,10 @@
     <xs:attribute name="skip" type="durationType"/>
     <xs:attribute name="voice" type="voiceType"/>
     <xs:attribute name="speed" type="xs:float"/>
+    <xs:attribute name="duck-others" type="duckOthersType"/>
+    <xs:attribute name="duck-threshold" type="duckThresholdType"/>
+    <xs:attribute name="duck-margin" type="durationType"/> <!-- default is 0.5s -->
+    <xs:attribute name="duck-fade" type="durationType"/> <!-- default is 1.0s -->
   </xs:complexType>
 
   <xs:simpleType name="voiceType">
@@ -531,6 +539,20 @@
     <xs:restriction base="xs:float">
       <xs:minInclusive value="0.0"/>
       <xs:maxInclusive value="10.0"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="duckThresholdType">
+    <xs:restriction base="xs:float">
+      <xs:minInclusive value="0.0"/>
+      <xs:maxInclusive value="1.0"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="duckOthersType">
+    <xs:restriction base="xs:float">
+      <xs:minInclusive value="0.0"/>
+      <xs:maxInclusive value="1.0"/>
     </xs:restriction>
   </xs:simpleType>
 

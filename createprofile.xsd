@@ -70,6 +70,10 @@
       <xs:element name="country" minOccurs="0"/>
       <xs:element name="city" minOccurs="0"/>
 
+      <xs:element name="published" minOccurs="0"/> <!-- dailymotion specific -->
+      <xs:element name="publicationDate" minOccurs="0"/> <!-- dailymotion specific -->
+      <xs:element name="geoblockWhiteList" minOccurs="0"/> <!-- dailymotion specific -->
+      <xs:element name="geoblockList" minOccurs="0"/> <!-- dailymotion specific -->
 
       <!-- Stupeflix video generation directive -->
       <xs:element name="framerate" type="xs:float" minOccurs="0"/> <!-- between 0 and 100 frames per second -->
@@ -231,6 +235,7 @@
       <xs:enumeration value="wmv2"/>
 
       <xs:enumeration value="720p"/>
+      <xs:enumeration value="720p-hq"/>
       <xs:enumeration value="720p-29-97-fps"/>
       <xs:enumeration value="720p-24-fps"/>
       <xs:enumeration value="720p-23-98-fps"/>
