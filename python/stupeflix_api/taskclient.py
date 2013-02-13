@@ -2,13 +2,13 @@ try:
     import simplejson as json
 except Exception, e:
     import json
-import urllib2
 import urllib
-import copy
+
 
 class HTTPError(Exception):
     def __init__(self, code, message):
         super(HTTPError, self).__init__("HTTPError %s: %s" % (code, message))
+
 
 class LizardClient(object):
     def __init__(self,  baseurl, accesskey = None, secret = None, auth_model = "secret"):
@@ -47,7 +47,6 @@ class LizardClient(object):
             yield payload    
 
     def taskPrepare_(self, response = "status", **kwargs):
-        url = "%s/" % (self.baseurl)
         parameters = {}
         
         for k,v in kwargs.items():
